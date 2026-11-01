@@ -1,0 +1,15 @@
+/* DESIGN-001: THE DINING EDIT only. No changes to shared showcase or global UI. */
+.restaurant-menu-control{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.restaurant-menu-control label{font-size:13px;font-weight:600;letter-spacing:.01em}
+.restaurant-menu-control select,.restaurant-preview-fields select,.restaurant-preview-fields input{width:100%;min-height:44px;padding:10px 12px;border:1px solid #817d76;border-radius:6px;background:#fff;color:#191919;font:inherit}
+.restaurant-menu-control select{width:min(100%,230px)}
+.restaurant-menu-control select:focus-visible,.restaurant-preview-fields select:focus-visible,.restaurant-preview-fields input:focus-visible,.restaurant-preview-button:focus-visible{outline:3px solid #a87b30;outline-offset:2px}
+.restaurant-reservation-preview{margin:24px 0;padding:20px;border:1px solid #dfdbd3;border-radius:8px;background:#faf9f6}
+.restaurant-reservation-preview h3{margin:0 0 8px;font-size:18px;letter-spacing:-.03em}
+.restaurant-reservation-preview .restaurant-preview-note{margin:0 0 16px}
+.restaurant-preview-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.restaurant-preview-fields label{display:block;font-size:12px;font-weight:600;color:#373737}
+.restaurant-preview-fields label select,.restaurant-preview-fields label input{display:block;margin-top:7px;font-size:13px}
+.restaurant-preview-button{margin-top:16px;min-height:44px;border:0;border-radius:6px;background:#18231d;color:#fff;padding:10px 14px;font-weight:600;cursor:pointer}
+#restaurant-preview-result{margin:12px 0 0;line-height:1.5}
+@media(max-width:520px){.restaurant-preview-fields{grid-template-columns:1fr}.restaurant-reservation-preview{padding:15px}.restaurant-menu-control{align-items:stretch}.restaurant-menu-control select{width:100%}.t-cinema .special-row{gap:10px}.t-cinema .special-row em{white-space:normal;text-align:right}}
