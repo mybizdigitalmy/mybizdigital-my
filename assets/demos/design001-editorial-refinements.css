@@ -1,0 +1,50 @@
+/* DESIGN-001: industry-specific editorial refinements. Scoped ONLY to the shared showcase pages.
+   Approved Barber layout, main MyBizDigital pages and all app demos are unaffected. */
+body.d1-editorial{--d1-radius:clamp(12px,1.6vw,24px)}
+.d1-editorial .hero .intro{max-width:56ch;text-wrap:pretty}
+.d1-editorial .section-top{gap:clamp(18px,4vw,64px);align-items:end}
+.d1-editorial .section-top>p{max-width:40ch;line-height:1.75;opacity:.85}
+.d1-editorial .section .demo-note{margin-top:clamp(24px,3vw,42px);font-size:12px;letter-spacing:.01em}
+.d1-editorial .story{position:relative}
+.d1-editorial .story-grid{align-items:center;gap:clamp(28px,6vw,100px)}
+.d1-editorial .story-image.d1-original-art{position:relative;isolation:isolate;overflow:hidden;border-radius:var(--d1-radius);box-shadow:0 22px 50px rgba(0,0,0,.07)}
+.d1-editorial .story-image.d1-original-art img{object-fit:contain;object-position:center;filter:none}
+.d1-editorial .story-image.d1-original-art:after{content:'';position:absolute;inset:0;border:1px solid rgba(80,80,80,.12);border-radius:inherit;pointer-events:none}
+.d1-editorial .story-content>p:not(.eyebrow){max-width:52ch;line-height:1.8}
+.d1-editorial .story .eyebrow{color:inherit;opacity:.82}
+.d1-editorial .story .btn.secondary{color:inherit;border-color:currentColor;background:transparent}
+.d1-editorial .story .btn.secondary:hover{background:rgba(255,255,255,.12)}
+.d1-editorial .d1-experience-list{list-style:none;padding:0;margin:clamp(22px,3vw,34px) 0;display:grid;gap:0;border-top:1px solid currentColor}
+.d1-editorial .d1-experience-list li{display:grid;grid-template-columns: minmax(100px,.8fr) minmax(0,1.25fr);gap:16px;padding:13px 0;border-bottom:1px solid currentColor;font-size:13px;line-height:1.55;align-items:baseline}
+.d1-editorial .d1-experience-list b{font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:750}
+.d1-editorial .d1-experience-list span{opacity:.83}
+.d1-editorial .detail-box{border-radius:var(--d1-radius);padding:clamp(28px,4vw,56px)}
+.d1-editorial .special-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(16px,3vw,30px)}
+.d1-editorial .special-row em{white-space:normal;text-align:right;line-height:1.55}
+.d1-editorial .special-photo{overflow:hidden}
+.d1-editorial .special-photo img{object-position:center}
+.d1-editorial .eyebrow{letter-spacing:.18em}
+.d1-editorial .head-action,.d1-editorial .btn{transition:background-color .18s ease,color .18s ease,border-color .18s ease}
+.d1-editorial .btn:focus-visible,.d1-editorial .head-action:focus-visible,.d1-editorial .nav-links a:focus-visible,.d1-editorial .mobile-menu:focus-visible{outline:3px solid currentColor;outline-offset:4px}
+/* Brand-specific treatments retain each existing identity instead of a generic card template. */
+.d1-editorial.t-offset .d1-original-art{border-radius:140px 140px 20px 20px}
+.d1-editorial.t-artisan .d1-original-art{border-radius: 260px 260px 20px 20px}
+.d1-editorial.t-editorial .d1-original-art{border-radius:0}
+.d1-editorial.t-tech .d1-original-art{border-radius:4px;box-shadow:16px 16px 0 rgba(65,120,105,.15)}
+.d1-editorial.t-hotel .d1-original-art,.d1-editorial.t-estate .d1-original-art{border-radius:0 90px 0 0}
+.d1-editorial.t-serene .d1-original-art{border-radius:240px 240px 12px 12px}
+.d1-editorial.t-fitness .d1-original-art{border-radius:0;box-shadow:14px 14px 0 rgba(200,243,101,.22)}
+.d1-editorial.t-auto .d1-original-art{border-radius:2px;box-shadow:18px 18px 0 rgba(229,183,106,.18)}
+.d1-editorial.t-learning .d1-original-art{border-radius:22px 180px 22px 22px}
+.d1-editorial.t-clinical .d1-original-art,.d1-editorial.t-clinical-alt .d1-original-art{border-radius:24px 24px 110px 24px}
+.d1-editorial.t-cinema .d1-original-art{border-radius:140px 140px 4px 4px}
+@media(max-width:740px){
+ .d1-editorial .story-grid{gap:22px}
+ .d1-editorial .story-image.d1-original-art{height:min(83vw,350px)}
+ .d1-editorial .d1-experience-list li{grid-template-columns:1fr;gap:4px}
+ .d1-editorial .special-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+ .d1-editorial .special-row em{font-size:12px;overflow-wrap:anywhere}
+ .d1-editorial .detail-box{padding:26px 22px}
+ .d1-editorial .head-action,.d1-editorial .btn{transition:none}
+}
+@media(prefers-reduced-motion:reduce){.d1-editorial *{transition:none!important;animation:none!important}}

@@ -9,3 +9,15 @@
 .barber-team p{font-size:13px;color:#6b6962;line-height:1.8;margin:0;max-width:400px}
 .team-note{margin-top:18px;font-size:10px;line-height:1.6;color:#88857e}
 @media(max-width:650px){.barber-team{grid-template-columns:1fr;gap:12px}.barber-team article{padding:27px;min-height:0}.barber-team h3{font-size:30px;margin:22px 0 12px}}
+
+/* DESIGN-001 narrow update: original Barber photos remain in hero, services and story;
+   replace repeated photo gallery with editorial experience cards, without altering navigation. */
+.d1-barber-cards{gap:12px}
+.d1-barber-cards .d1-barber-card{position:relative;display:flex;flex-direction:column;min-height:380px;padding:clamp(24px,2.5vw,38px);background:#f1e9dd;color:#292522;border:1px solid rgba(62,51,40,.12)}
+.d1-barber-cards .d1-barber-card-featured{background:#26221e;color:#f7eee4}
+.d1-barber-card-index{font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:.7}
+.d1-barber-cards .d1-barber-card h3{font-size:clamp(25px,2.4vw,39px);line-height:1.12;font-weight:550;letter-spacing:-.047em;margin:auto 0 15px;max-width:14ch}
+.d1-barber-cards .d1-barber-card p{font-size:14px;line-height:1.65;max-width:25ch;opacity:.82;margin:0 0 26px}
+.d1-barber-card-foot{font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.6;border-top:1px solid currentColor;padding-top:18px}
+@media(max-width:740px){.d1-barber-cards{grid-template-columns:1fr 1fr;gap:8px}.d1-barber-cards .d1-barber-card{min-height:260px;padding:22px}.d1-barber-cards .d1-barber-card-featured{grid-column:auto;grid-row:auto;min-height:260px}.d1-barber-cards .d1-barber-card h3{font-size:25px}.d1-barber-cards .d1-barber-card p{font-size:12px}.d1-barber-cards .d1-barber-card:last-child{grid-column:1/-1;min-height:220px}}
+@media(max-width:440px){.d1-barber-cards{grid-template-columns:1fr}.d1-barber-cards .d1-barber-card,.d1-barber-cards .d1-barber-card-featured{grid-column:auto;min-height:245px}}
