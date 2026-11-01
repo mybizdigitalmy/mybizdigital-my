@@ -18,7 +18,7 @@
 
 ## Exact scope and preservation
 
-PR-001 initially added five files: .firebaserc, firebase.json, scripts/build-static.mjs, tests/hosting/hosting.test.mjs and this note. This target-binding revision modifies ONLY .firebaserc, tests/hosting/hosting.test.mjs and this note.
+PR-001 initially added five files. Staging safety now adds scripts/staging-contact-guard.js and modifies only the existing PR-001 build script, tests, and engineering notes; production source stays unchanged.
 
 No modifications to any existing HTML, CSS, JS, videos or images; all 15 website demos and 16 business app demos, original products and assets, navigation, animations, responsive behavior, static-black footer, Netlify files and both asset manifests are preserved.
 
@@ -75,3 +75,13 @@ Rollback: restore the last recorded known-good staging Hosting release if one ex
 ## Phase 00 remains independent
 
 00.02 visual approvals and full live comparisons; 00.03 DNS/third-party inventory; 00.04 shipping, warranty and legal decisions; and 00.06 formal founder acceptance are pending. This PR does not mark any unverified item PASS.
+
+## Approved staging pre-deployment safety gate — 1 November 2026
+
+The owner authorized staging-only deployment, NOT any live production, DNS, billing, HitPay, or main-branch change. The existing assets/contact.js posts to Netlify Forms; Firebase Hosting has no equivalent backend. **Never accept enquiries or personal information from staging.**
+
+The staging build preserves the 180 public file paths and all 40 HTML pages. Only two generated outputs intentionally differ from the originals: dist/contact.html displays a visible staging warning and marks the native submit button disabled (including when JavaScript is off); dist/assets/contact.js appends a staging-only capture-phase submit blocker that protects the dedicated and popup forms. Source contact.html and assets/contact.js remain unchanged.
+
+Node.js 22 local preflight: 5/5 hosting tests PASS. Headless Chromium isolated UI fixture: disabled button, prevented submit event, popup form disabled. Direct localhost browser navigation was blocked by the environment; do not claim live or full visual PASS.
+
+**Staging deployment and live acceptance remain unverified** until Firebase Hosting deployment is performed through an authorized Firebase CLI/connected deployment environment, the release ID is recorded, and all 40 pages, 31 demos, HTTPS, headers, responsive behavior, and media are tested on the real staging domain. Never merge until owner approval.
