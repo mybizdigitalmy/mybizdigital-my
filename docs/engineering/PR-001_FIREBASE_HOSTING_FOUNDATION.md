@@ -13,12 +13,12 @@
 | Project ID | mybizdigital-staging | Owner confirmed; console URL consistent |
 | Web App | MyBizDigital-Staging-Web | Owner confirmed; app details not independently verified |
 | Plan | Spark (Free) | Owner confirmed; screenshot consistent |
-| Hosting site ID | UNVERIFIED / provisioning pending | Console displayed Get started |
+| Hosting site ID | mybizdigital-staging | Owner-confirmed 1 November 2026; cloud API readback not performed |
 | Production Firebase / DNS | UNVERIFIED | Out of scope |
 
 ## Exact scope and preservation
 
-Only five new files: .firebaserc, firebase.json, scripts/build-static.mjs, tests/hosting/hosting.test.mjs and this note.
+PR-001 initially added five files: .firebaserc, firebase.json, scripts/build-static.mjs, tests/hosting/hosting.test.mjs and this note. This target-binding revision modifies ONLY .firebaserc, tests/hosting/hosting.test.mjs and this note.
 
 No modifications to any existing HTML, CSS, JS, videos or images; all 15 website demos and 16 business app demos, original products and assets, navigation, animations, responsive behavior, static-black footer, Netlify files and both asset manifests are preserved.
 
@@ -26,7 +26,7 @@ No modifications to any existing HTML, CSS, JS, videos or images; all 15 website
 - Generated directory: dist/, already excluded by the existing .gitignore. Do not commit dist.
 - Rejects symlinks, dotfiles and unexpected extensions in public trees; copies approved assets byte-for-byte.
 - Hosting public directory is dist, not the repository root.
-- Site target is deliberately left unbound until a real Firebase Hosting site ID is verified and a separate owner approval is given.
+- Hosting target staging-site is now explicitly bound to the owner-confirmed Hosting site mybizdigital-staging under the staging Firebase project in .firebaserc. This is a local Git configuration change, NOT a cloud operation or deployment.
 - Staging-only headers: X-Robots-Tag noindex/nofollow/noarchive, X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin; HTML cache no-cache/must-revalidate.
 - No wildcard SPA rewrite, automatic domain redirect, production configuration, credentials, CSP or HSTS.
 - No Firebase Auth, Firestore, Functions, HitPay, DNS modification or billing upgrade.
@@ -41,11 +41,11 @@ The test suite generates dist, checks 180 exact public files and 40 HTML pages, 
 
     node scripts/build-static.mjs
 
-Automated tests cannot certify live TLS, real response headers, visual fidelity or dynamic form behavior.
+Automated tests cannot certify live TLS, real response headers, visual fidelity or dynamic form behavior. The hosting target mapping test now expects exactly the staging project mybizdigital-staging and one Hosting resource mybizdigital-staging.
 
 ## Mandatory acceptance before any staging deployment
 
-1. Verify the actual Firebase Hosting site ID and Spark plan. Screenshot showed Get started, not a proven provisioned site.
+1. Confirm the owner-reported Hosting site ID and Spark plan via read-only Firebase Console or CLI inspection before deployment. Local target mapping is present, but cloud resource lookup and deployed behavior remain untested.
 2. Verify GitHub/Netlify branch deployment triggers and avoid automatic preview deployments without owner approval.
 3. Verify all 40 pages and 31 demos against approved desktop/tablet/mobile design baselines, navigation, animation, media, interactions and accessibility.
 4. Test staging routes, real 404 responses, HTTPS, noindex, caching and security headers.
@@ -56,11 +56,15 @@ Automated tests cannot certify live TLS, real response headers, visual fidelity 
 
 ## Guarded future steps (require additional explicit approval)
 
-First verify/provision Hosting site and map its confirmed ID:
+The staging-site target is bound in .firebaserc to the owner-confirmed site ID. The equivalent Firebase CLI command (NOT run; no need to run again) is:
 
-    firebase target:apply hosting staging-site VERIFIED_SITE_ID --project staging
+    firebase target:apply hosting staging-site mybizdigital-staging --project staging
 
-Site binding is not deployment. After a separate approved staging go/no-go decision:
+Verify the local target configuration read-only using:
+
+    firebase target --project staging
+
+The mapping is not deployment. After a separate approved staging go/no-go decision:
 
     firebase deploy --only hosting:staging-site --project staging
 

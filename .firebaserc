@@ -1,5 +1,14 @@
 {
   "projects": {
     "staging": "mybizdigital-staging"
+  },
+  "targets": {
+    "mybizdigital-staging": {
+      "hosting": {
+        "staging-site": [
+          "mybizdigital-staging"
+        ]
+      }
+    }
   }
 }

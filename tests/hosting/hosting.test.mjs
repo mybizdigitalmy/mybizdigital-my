@@ -29,7 +29,7 @@ before(() => {
   execFileSync(process.execPath, ['scripts/build-static.mjs'], { cwd: root, stdio: 'pipe' });
 });
 
-test('staging config uses a deliberately unbound Hosting target, never production', async () => {
+test('staging config binds only the verified staging Hosting site, never production', async () => {
   const config = JSON.parse(await readFile(path.join(root, 'firebase.json'), 'utf8'));
   const rc = JSON.parse(await readFile(path.join(root, '.firebaserc'), 'utf8'));
   assert.equal(config.hosting.target, 'staging-site');
@@ -37,7 +37,12 @@ test('staging config uses a deliberately unbound Hosting target, never productio
   assert.equal(config.hosting.rewrites, undefined);
   assert.equal(config.hosting.redirects, undefined);
   assert.deepEqual(rc.projects, { staging: 'mybizdigital-staging' });
-  assert.equal(rc.targets, undefined);
+  assert.deepEqual(rc.targets, {
+    'mybizdigital-staging': {
+      hosting: { 'staging-site': ['mybizdigital-staging'] }
+    }
+  });
+  assert.deepEqual(Object.keys(rc.targets), ['mybizdigital-staging']);
   assert.ok(config.hosting.headers.some(rule =>
     rule.headers.some(header => header.key === 'X-Robots-Tag' && header.value.includes('noindex'))));
 });
