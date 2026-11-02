@@ -47,7 +47,7 @@ test('staging config binds only the verified staging Hosting site, never product
     rule.headers.some(header => header.key === 'X-Robots-Tag' && header.value.includes('noindex'))));
 });
 
-test('180 public files and all 40 HTML pages are copied byte-for-byte', async () => {
+test('184 public files and all 40 HTML pages are copied byte-for-byte', async () => {
   const expected = rootPages.slice();
   for (const dir of publicDirectories) expected.push(...await listFiles(path.join(root, dir), dir));
   expected.sort();
