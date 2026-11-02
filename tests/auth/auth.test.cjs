@@ -159,3 +159,13 @@ test('premium handler does not change sign-up, verification email or password-re
   assert.ok(!html.includes('<form action='));
   assert.ok(html.includes('<form id="mbd-action-reset-form" novalidate>'));
 });
+
+test('premium design previews are restricted to localhost and never make auth requests', () => {
+  const ui = read('assets/auth-action.js');
+  assert.ok(ui.includes("const preview = qs.get('preview');"));
+  assert.ok(ui.includes("(location.hostname === 'localhost' || location.hostname === '127.0.0.1')"));
+  assert.ok(ui.includes("!mode && !actionCode && !requestedApiKey"));
+  assert.ok(ui.includes("preview === 'verifyEmail' || preview === 'resetPassword'"));
+  assert.ok(ui.includes('DESIGN PREVIEW ONLY'));
+  assert.ok(ui.indexOf('DESIGN PREVIEW ONLY') < ui.indexOf("import('https://www.gstatic.com/firebasejs/"));
+});

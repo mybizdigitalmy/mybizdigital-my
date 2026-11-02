@@ -96,6 +96,26 @@
     fail('The staging account service is not available on this page.');
     return;
   }
+  // Localhost-only DESIGN PREVIEW. No Firebase SDK is imported or action code used.
+  // This lets the owner review both layouts while Firebase's template updates are restricted.
+  const preview = qs.get('preview');
+  if ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') &&
+      !mode && !actionCode && !requestedApiKey &&
+      (preview === 'verifyEmail' || preview === 'resetPassword')) {
+    if (preview === 'verifyEmail') {
+      render('One step from verified', 'This is a design preview of the email verification screen.', 'VERIFY YOUR ACCOUNT');
+      verifyArea.hidden = false;
+      verifyButton.disabled = true;
+    } else {
+      render('Create a new password', 'This is a design preview of the password recovery screen.', 'PASSWORD RECOVERY');
+      accountLabel.textContent = 'Example account · no real customer data';
+      resetArea.hidden = false;
+      resetButton.disabled = true;
+    }
+    note('DESIGN PREVIEW ONLY — No action links are processed and no account changes occur.');
+    return;
+  }
+
   if (!safeRequest || (requestedApiKey && requestedApiKey !== config.apiKey)) {
     fail('The email link is missing, invalid, expired or belongs to another project.');
     return;
