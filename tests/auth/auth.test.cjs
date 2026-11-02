@@ -85,3 +85,23 @@ test('frontend integration is staging-scoped and no live checkout is enabled', (
   assert.ok(build.includes("'assets', 'demos', 'apps'"));
   assert.equal(JSON.parse(header).hosting.target,'staging-site');
 });
+
+test('login and signup passwords have independently labelled and keyboard-operable visibility controls', () => {
+  const ui = read('assets/auth-staging.js'), css = read('assets/auth-staging.css');
+  for (const id of ['mbd-auth-login-password', 'mbd-auth-signup-password']) {
+    assert.ok(ui.includes('id="' + id + '"'));
+    assert.ok(ui.includes("passwordEyeButton('" + id + "')"));
+  }
+  assert.ok(ui.includes('aria-label="Show password"'));
+  assert.ok(ui.includes('aria-pressed="false"'));
+  assert.ok(ui.includes("field.type = reveal ? 'text' : 'password'"));
+  assert.ok(ui.includes("reveal ? 'Hide password' : 'Show password'"));
+  assert.ok(ui.includes('function concealPasswords()'));
+  assert.ok(ui.includes("dialog.addEventListener('close', () => {\n    concealPasswords();"));
+  assert.ok(ui.includes(':not([data-auth-toggle-password])'));
+  assert.ok(css.includes('.mbd-auth-password-field'));
+  assert.ok(css.includes('padding-right:57px'));
+  assert.ok(css.includes('.mbd-auth-password-toggle'));
+  assert.ok(ui.includes('autocomplete="current-password"'));
+  assert.ok(ui.includes('autocomplete="new-password"'));
+});

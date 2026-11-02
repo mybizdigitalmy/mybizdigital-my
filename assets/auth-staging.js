@@ -8,6 +8,18 @@
   if (!policy || !policy.stagingHost(location.hostname)) return;
   const config = window.__MBD_FIREBASE_STAGING_CONFIG;
   const configured = policy.configValid(config);
+  // Inline SVG is deliberately local and contains no external image or network request.
+  const passwordEyeButton = id => `
+    <button type="button" class="mbd-auth-password-toggle" data-auth-toggle-password="${id}"
+      aria-controls="${id}" aria-label="Show password" aria-pressed="false" title="Show password">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+        aria-hidden="true" focusable="false">
+        <path d="M2.5 12s3.6-6 9.5-6 9.5 6 9.5 6-3.6 6-9.5 6-9.5-6-9.5-6Z"/>
+        <circle cx="12" cy="12" r="2.8"/>
+        <path class="mbd-auth-eye-slash" d="M3 3 21 21"/>
+      </svg>
+    </button>`;
   const template = `
     <div class="mbd-auth-inner">
       <button type="button" class="mbd-auth-close" data-auth-action="close" aria-label="Close account dialog">×</button>
@@ -19,7 +31,10 @@
           <label class="mbd-auth-label" for="mbd-auth-login-email">Email address</label>
           <input class="mbd-auth-input" id="mbd-auth-login-email" name="email" type="email" autocomplete="email" required maxlength="254">
           <label class="mbd-auth-label" for="mbd-auth-login-password">Password</label>
-          <input class="mbd-auth-input" id="mbd-auth-login-password" name="password" type="password" autocomplete="current-password" required>
+          <div class="mbd-auth-password-field">
+            <input class="mbd-auth-input" id="mbd-auth-login-password" name="password" type="password" autocomplete="current-password" required>
+            ${passwordEyeButton('mbd-auth-login-password')}
+          </div>
           <button class="mbd-auth-primary" type="submit">Log in</button>
         </form>
         <div class="mbd-auth-links"><button class="mbd-auth-link" type="button" data-auth-action="signup">Create an account</button><button class="mbd-auth-link" type="button" data-auth-action="reset">Forgot password?</button></div>
@@ -31,7 +46,10 @@
           <label class="mbd-auth-label" for="mbd-auth-signup-email">Email address</label>
           <input class="mbd-auth-input" id="mbd-auth-signup-email" name="email" type="email" autocomplete="email" required maxlength="254">
           <label class="mbd-auth-label" for="mbd-auth-signup-password">Password (12–128 characters, include uppercase, lowercase, a number and a special character)</label>
-          <input class="mbd-auth-input" id="mbd-auth-signup-password" name="password" type="password" autocomplete="new-password" required minlength="12" maxlength="128">
+          <div class="mbd-auth-password-field">
+            <input class="mbd-auth-input" id="mbd-auth-signup-password" name="password" type="password" autocomplete="new-password" required minlength="12" maxlength="128">
+            ${passwordEyeButton('mbd-auth-signup-password')}
+          </div>
           <button class="mbd-auth-primary" type="submit">Create account</button>
         </form>
         <div class="mbd-auth-links"><button class="mbd-auth-link" type="button" data-auth-action="login">Already have an account? Log in</button></div>
@@ -63,7 +81,7 @@
   document.body.append(dialog);
   const status = dialog.querySelector('[data-auth-status]');
   const panels = [...dialog.querySelectorAll('[data-auth-panel]')];
-  const actions = [...dialog.querySelectorAll('button:not([data-auth-action="close"])')];
+  const actions = [...dialog.querySelectorAll('button:not([data-auth-action="close"]):not([data-auth-toggle-password])')];
   let mode = 'login', auth = null, sdk = null, user = null, busy = false, lastVerificationSent = NaN;
   function message(text, kind = 'info') {
     status.textContent = text; // No error/identity HTML injection.
@@ -77,7 +95,17 @@
       if (button.type === 'submit') button.disabled = disabled;
     }
   }
+  function concealPasswords() {
+    for (const button of dialog.querySelectorAll('[data-auth-toggle-password]')) {
+      const field = dialog.querySelector('#' + button.dataset.authTogglePassword);
+      if (field) field.type = 'password';
+      button.setAttribute('aria-pressed', 'false');
+      button.setAttribute('aria-label', 'Show password');
+      button.title = 'Show password';
+    }
+  }
   function render(next) {
+    concealPasswords();
     mode = next;
     for (const panel of panels) panel.hidden = panel.dataset.authPanel !== next;
     if (next === 'account') {
@@ -105,6 +133,17 @@
     open(link.getAttribute('href') === '#signup' ? 'signup' : 'login');
   });
   dialog.addEventListener('click', async event => {
+    const visibilityButton = event.target.closest('[data-auth-toggle-password]');
+    if (visibilityButton) {
+      const field = dialog.querySelector('#' + visibilityButton.dataset.authTogglePassword);
+      if (!field) return;
+      const reveal = field.type === 'password';
+      field.type = reveal ? 'text' : 'password';
+      visibilityButton.setAttribute('aria-pressed', String(reveal));
+      visibilityButton.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+      visibilityButton.title = reveal ? 'Hide password' : 'Show password';
+      return;
+    }
     const button = event.target.closest('[data-auth-action]');
     if (!button || busy) return;
     const action = button.dataset.authAction;
@@ -182,6 +221,7 @@
     }
   });
   dialog.addEventListener('close', () => {
+    concealPasswords();
     dialog.querySelectorAll('input[type="password"]').forEach(input => { input.value = ''; });
   });
   render('login');
