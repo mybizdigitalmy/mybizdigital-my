@@ -25,9 +25,12 @@
     const email = typeof raw === 'string' ? raw.trim().toLowerCase() : '';
     return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : '';
   }
+  // Same special-character set documented for Firebase password policies.
+  const firebasePasswordSpecials = new Set(["^","$","*",".","[","]","{","}","(",")","?","\"","!","@","#","%","&","/","\\",",",">","<","'",":",";","|","_","~"]);
   function strongPassword(value) {
     return typeof value === 'string' && value.length >= 12 && value.length <= 128 &&
-      /[A-Za-z]/.test(value) && /\d/.test(value);
+      /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value) &&
+      Array.from(value).some(character => firebasePasswordSpecials.has(character));
   }
   function verifiedCustomer(user) {
     return !!user && user.emailVerified === true && user.isAnonymous !== true &&

@@ -19,14 +19,25 @@ test('invalid, missing and cross-project Firebase configs cannot activate authen
   for (const x of [null,{}, {...good,apiKey:''},{...good,appId:''},{...good,projectId:'mybizdigital-prod'},
     {...good,authDomain:'malicious.example'},{...good,apiKey:'FAKE'}]) assert.equal(policy.configValid(x),false);
 });
-test('password quality and email format enforce client-side minimums', () => {
+test('password quality and email format mirror enforced staging requirements', () => {
   assert.equal(policy.normalizeEmail(' Customer@Example.COM '),'customer@example.com');
   assert.equal(policy.normalizeEmail('invalid'), '');
   assert.equal(policy.normalizeEmail('a'.repeat(255)+'@example.com'), '');
   assert.equal(policy.strongPassword('Ten1111111'),false);
   assert.equal(policy.strongPassword('abcdefghijkl'),false);
   assert.equal(policy.strongPassword('123456789012'),false);
-  assert.equal(policy.strongPassword('Longer123456'),true);
+  // Firebase staging requires uppercase, lowercase, digits and an allowed special character.
+  assert.equal(policy.strongPassword('Longer123456'),false); // missing special
+  assert.equal(policy.strongPassword('longer123456!'),false); // missing uppercase
+  assert.equal(policy.strongPassword('LONGER123456!'),false); // missing lowercase
+  assert.equal(policy.strongPassword('LongerPassword!'),false); // missing digit
+  assert.equal(policy.strongPassword('Aa1!'),false); // fewer than 12 characters
+  assert.equal(policy.strongPassword('Aa1!'+'a'.repeat(125)),false); // over 128 characters
+  assert.equal(policy.strongPassword('Longer123456+'),false); // + is not a Firebase policy special
+  assert.equal(policy.strongPassword('Longer123456 '),false); // whitespace is not special
+  assert.equal(policy.strongPassword('Longer123456!'),true);
+  assert.equal(policy.strongPassword('Longer123456_'),true);
+  assert.equal(policy.strongPassword('Longer123456\\\\'),true);
 });
 test('verified customer is required; client-side policy cannot replace backend authorization', () => {
   assert.equal(policy.verifiedCustomer(null),false);
@@ -53,7 +64,11 @@ test('frontend integration is staging-scoped and no live checkout is enabled', (
   assert.ok(ui.includes('browserSessionPersistence'));
   assert.ok(ui.includes('sendEmailVerification'));
   assert.ok(ui.includes('sendPasswordResetEmail'));
-  assert.ok(!/hitpay|createPayment|Firestore|\.env\b/i.test(ui));
+  // Check for executable commerce/database SDK calls, not explanatory comments.
+  assert.ok(!/\b(?:getFirestore|initializeFirestore|getFunctions|createPayment|connectFunctionsEmulator)\s*\(/.test(ui));
+  assert.ok(!/https?:\/\/[^'"\u0060\s]*hitpay/i.test(ui));
+  assert.ok(ui.includes('uppercase, lowercase, a number and a special character'));
+  assert.ok(ui.includes('Use 12–128 characters with uppercase and lowercase letters, a number and a special character.'));
   assert.ok(cfg.includes("apiKey: ''"));
   assert.ok(build.includes("'contact.html'"));
   assert.ok(build.includes("'assets', 'demos', 'apps'"));

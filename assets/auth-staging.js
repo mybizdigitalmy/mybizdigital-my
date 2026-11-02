@@ -30,7 +30,7 @@
         <form data-auth-form="signup" novalidate>
           <label class="mbd-auth-label" for="mbd-auth-signup-email">Email address</label>
           <input class="mbd-auth-input" id="mbd-auth-signup-email" name="email" type="email" autocomplete="email" required maxlength="254">
-          <label class="mbd-auth-label" for="mbd-auth-signup-password">Password (12–128 characters, include letters and numbers)</label>
+          <label class="mbd-auth-label" for="mbd-auth-signup-password">Password (12–128 characters, include uppercase, lowercase, a number and a special character)</label>
           <input class="mbd-auth-input" id="mbd-auth-signup-password" name="password" type="password" autocomplete="new-password" required minlength="12" maxlength="128">
           <button class="mbd-auth-primary" type="submit">Create account</button>
         </form>
@@ -147,7 +147,7 @@
     const purpose = form.dataset.authForm;
     const password = purpose === 'reset' ? '' : form.elements.password.value;
     if (purpose === 'signup' && !policy.strongPassword(password)) {
-      return message('Use a 12–128 character password containing letters and numbers.', 'error');
+      return message('Use 12–128 characters with uppercase and lowercase letters, a number and a special character.', 'error');
     }
     if (purpose === 'login' && !password) return message('Enter your password.', 'error');
     busy = true; syncButtons();

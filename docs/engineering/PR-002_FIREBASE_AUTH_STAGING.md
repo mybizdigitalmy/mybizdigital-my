@@ -42,3 +42,9 @@ The Hosting test's audited expected static-file count increases from 180 to 184:
 
 ## Rollback
 Reset the PR-002 feature branch to the pre-implementation Firebase foundation SHA `6504d5bcd12af6bf9d7efaefc1bdd643a23739ea`. No `main` or deployed release is affected by this PR.
+
+## Staging password policy alignment — owner reported saved on 2 November 2026
+- Email enumeration protection was visually verified as enabled in the Firebase Console.
+- Owner confirmed saving password **Require enforcement** with minimum length 12, maximum length 128, and required uppercase, lowercase, numeric and special characters; cloud policy readback after saving is not independently verified.
+- PR-002 client validation and form labels now require the same criteria and accept only Firebase's documented special-character set. Firebase Authentication enforces its own server-side policy; client validation is guidance, not an authorization boundary.
+- No changes to Firebase settings were made through this code update, and no staging deployment, customer registration, or email round-trip has occurred.
