@@ -169,3 +169,22 @@ test('premium design previews are restricted to localhost and never make auth re
   assert.ok(ui.includes('DESIGN PREVIEW ONLY'));
   assert.ok(ui.indexOf('DESIGN PREVIEW ONLY') < ui.indexOf("import('https://www.gstatic.com/firebasejs/"));
 });
+
+test('premium account action pages use one focused centered card without the editorial hero', () => {
+  const html = read('auth/action.html'), css = read('assets/auth-action.css'), js = read('assets/auth-action.js');
+  assert.ok(html.includes('class="mbd-action-layout"'));
+  assert.ok(html.includes('class="mbd-action-content"'));
+  assert.ok(!html.includes('class="mbd-action-editorial"'));
+  assert.ok(!html.includes('Secure access.'));
+  assert.ok(!html.includes('Simply done.'));
+  assert.ok(!html.includes('PRIVATE BY DESIGN. BUILT FOR BUSINESS.'));
+  assert.ok(!css.includes('.mbd-action-editorial'));
+  assert.ok(css.includes('width:min(570px,100%)'));
+  assert.ok(css.includes('display:block;background:#fff'));
+  assert.ok(html.includes('>Verify email <span'));
+  assert.ok(html.includes('id="mbd-action-reset-form"'));
+  assert.ok(js.includes("render('Verify your email'"));
+  assert.ok(js.includes("render('Reset your password'"));
+  assert.ok(html.includes('data-password-toggle="mbd-action-new-password"'));
+  assert.ok(html.includes('data-password-toggle="mbd-action-confirm-password"'));
+});

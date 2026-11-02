@@ -103,11 +103,11 @@
       !mode && !actionCode && !requestedApiKey &&
       (preview === 'verifyEmail' || preview === 'resetPassword')) {
     if (preview === 'verifyEmail') {
-      render('One step from verified', 'This is a design preview of the email verification screen.', 'VERIFY YOUR ACCOUNT');
+      render('Verify your email', 'Confirm your email address to activate your customer account.', 'EMAIL VERIFICATION');
       verifyArea.hidden = false;
       verifyButton.disabled = true;
     } else {
-      render('Create a new password', 'This is a design preview of the password recovery screen.', 'PASSWORD RECOVERY');
+      render('Reset your password', 'Create a new password for your customer account.', 'PASSWORD RECOVERY');
       accountLabel.textContent = 'Example account · no real customer data';
       resetArea.hidden = false;
       resetButton.disabled = true;
@@ -143,14 +143,14 @@
           return;
         }
         valid = true;
-        render('One step from verified', 'Your email confirmation link is valid. Select the button below to complete verification.', 'VERIFY YOUR ACCOUNT');
+        render('Verify your email', 'Your email confirmation link is valid. Select the button below to finish verification.', 'EMAIL VERIFICATION');
         verifyArea.hidden = false;
         verifyButton.disabled = false;
       } else {
         const email = await sdk.verifyPasswordResetCode(auth, actionCode);
         accountLabel.textContent = 'Resetting the password for ' + email;
         valid = true;
-        render('Create a new password', 'Choose a strong password for your MyBizDigital account.', 'PASSWORD RECOVERY');
+        render('Reset your password', 'Choose a strong new password for your MyBizDigital account.', 'PASSWORD RECOVERY');
         resetArea.hidden = false;
         resetButton.disabled = false;
       }
