@@ -92,6 +92,10 @@ async function prepareContact() {
     '<p class="mbd-launch-contact-note">Your email application will open. No information is submitted by this website.</p>' +
     '</section>';
   html = html.replace(form, replacement);
+  // The old panel instructions mention an upload form that no longer exists.
+  const oldPrompt = 'Complete the form below. Fields marked * are required.';
+  assert(html.includes(oldPrompt), 'contact panel wording changed; review required');
+  html = html.replace(oldPrompt, 'Email us directly and our team will review your enquiry.');
   assert(!html.includes('data-netlify="true"'), 'legacy Netlify processing remains in output');
   html = addCanonical(html, domain + '/contact.html');
   await writeFile(file, html, 'utf8');

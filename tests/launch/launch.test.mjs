@@ -68,6 +68,8 @@ test('contact route uses explicit email handoff rather than nonfunctional form',
   assert.ok(!html.includes('id="mbd-contact-form"'));
   assert.ok(!html.includes('name="mybiz-enquiry"'));
   assert.ok(!html.includes('data-netlify="true"'));
+  assert.ok(!html.includes('Complete the form below. Fields marked * are required.'));
+  assert.ok(html.includes('Email us directly and our team will review your enquiry.'));
   assert.ok(!js.includes('fetch(') && !js.includes('FormData'));
   assert.ok((await read('contact.html')).includes('name="mybiz-enquiry"'), 'original remains unchanged');
 });
