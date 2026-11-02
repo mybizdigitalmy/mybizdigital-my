@@ -43,12 +43,19 @@
         <h2 id="mbd-auth-signup-title">Create an account</h2>
         <p class="mbd-auth-text">An email verification link is required before future purchases can be made.</p>
         <form data-auth-form="signup" novalidate>
+          <label class="mbd-auth-label" for="mbd-auth-signup-name">Full name <span class="mbd-auth-optional">(optional)</span></label>
+          <input class="mbd-auth-input" id="mbd-auth-signup-name" name="displayName" type="text" autocomplete="name" maxlength="80" placeholder="Your name">
           <label class="mbd-auth-label" for="mbd-auth-signup-email">Email address</label>
           <input class="mbd-auth-input" id="mbd-auth-signup-email" name="email" type="email" autocomplete="email" required maxlength="254">
           <label class="mbd-auth-label" for="mbd-auth-signup-password">Password (12–128 characters, include uppercase, lowercase, a number and a special character)</label>
           <div class="mbd-auth-password-field">
             <input class="mbd-auth-input" id="mbd-auth-signup-password" name="password" type="password" autocomplete="new-password" required minlength="12" maxlength="128">
             ${passwordEyeButton('mbd-auth-signup-password')}
+          </div>
+          <label class="mbd-auth-label" for="mbd-auth-signup-confirm">Confirm password</label>
+          <div class="mbd-auth-password-field">
+            <input class="mbd-auth-input" id="mbd-auth-signup-confirm" name="confirmPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128">
+            ${passwordEyeButton('mbd-auth-signup-confirm')}
           </div>
           <button class="mbd-auth-primary" type="submit">Create account</button>
         </form>
@@ -109,7 +116,8 @@
     mode = next;
     for (const panel of panels) panel.hidden = panel.dataset.authPanel !== next;
     if (next === 'account') {
-      dialog.querySelector('[data-auth-identity]').textContent = user && user.email ? user.email : 'your account';
+      dialog.querySelector('[data-auth-identity]').textContent =
+        user && user.email ? (user.displayName ? user.displayName + ' · ' + user.email : user.email) : 'your account';
       dialog.querySelector('[data-auth-verification]').textContent =
         user && policy.verifiedCustomer(user)
           ? 'Email verified. Future purchases will still require secure server-side authorization.'
@@ -188,17 +196,33 @@
     if (purpose === 'signup' && !policy.strongPassword(password)) {
       return message('Use 12–128 characters with uppercase and lowercase letters, a number and a special character.', 'error');
     }
+    if (purpose === 'signup' && password !== form.elements.confirmPassword.value) {
+      return message('Passwords do not match. Please re-enter both passwords.', 'error');
+    }
+    const displayName = purpose === 'signup'
+      ? form.elements.displayName.value.trim().replace(/\s+/g, ' ') : '';
+    if (displayName.length > 80) return message('Name must be 80 characters or fewer.', 'error');
     if (purpose === 'login' && !password) return message('Enter your password.', 'error');
     busy = true; syncButtons();
     try {
       if (purpose === 'signup') {
         const result = await sdk.createUserWithEmailAndPassword(auth, email, password);
         user = result.user;
+        let nameSaved = true;
+        if (displayName) {
+          try {
+            await sdk.updateProfile(user, { displayName });
+          } catch (_) {
+            nameSaved = false; // Registration succeeded even if optional profile update failed.
+          }
+        }
         try {
           await sdk.sendEmailVerification(user, { url: 'https://mybizdigital-staging.web.app/' });
           lastVerificationSent = Date.now();
           render('account');
-          message('Account created. Check your inbox to verify your email. Purchasing remains disabled.');
+          message(nameSaved
+            ? 'Account created. Check your inbox to verify your email. Purchasing remains disabled.'
+            : 'Account created and verification email requested, but your optional name could not be saved.');
         } catch (verificationError) {
           render('account');
           message('Account created, but the verification email could not be sent. Use Resend verification email.', 'error');
@@ -217,6 +241,8 @@
       message(purpose === 'reset' ? 'If your account is eligible, reset instructions will arrive by email.' : policy.safeError(error && error.code), purpose === 'reset' ? 'info' : 'error');
     } finally {
       if (form.elements.password) form.elements.password.value = '';
+      if (form.elements.confirmPassword) form.elements.confirmPassword.value = '';
+      concealPasswords();
       busy = false; syncButtons();
     }
   });

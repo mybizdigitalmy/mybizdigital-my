@@ -108,3 +108,22 @@ test('login and signup passwords have independently labelled and keyboard-operab
   assert.ok(ui.includes('autocomplete="current-password"'));
   assert.ok(ui.includes('autocomplete="new-password"'));
 });
+
+test('registration includes optional name and matching-password protection before Firebase requests', () => {
+  const ui = read('assets/auth-staging.js');
+  for (const [field, name] of [
+    ['mbd-auth-signup-name','displayName'],
+    ['mbd-auth-signup-confirm','confirmPassword']]) {
+    assert.ok(ui.includes('id="' + field + '"'));
+    assert.ok(ui.includes('name="' + name + '"'));
+  }
+  assert.ok(ui.includes("passwordEyeButton('mbd-auth-signup-confirm')"));
+  assert.ok(ui.includes('autocomplete="name" maxlength="80"'));
+  assert.ok(ui.includes('autocomplete="new-password" required minlength="12" maxlength="128"'));
+  assert.ok(ui.includes('password !== form.elements.confirmPassword.value'));
+  assert.ok(ui.indexOf('password !== form.elements.confirmPassword.value') < ui.indexOf('sdk.createUserWithEmailAndPassword(auth, email, password)'));
+  assert.ok(ui.includes("form.elements.confirmPassword.value = ''"));
+  assert.ok(ui.includes('sdk.updateProfile(user, { displayName })'));
+  assert.ok(ui.includes('dialog.querySelector(\'[data-auth-identity]\').textContent ='));
+  assert.ok(!/\b(?:getFirestore|initializeFirestore|getFunctions|createPayment)\s*\(/.test(ui));
+});

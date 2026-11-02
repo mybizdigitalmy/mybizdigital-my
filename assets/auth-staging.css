@@ -27,3 +27,6 @@
 .mbd-auth-identity{font-weight:650;overflow-wrap:anywhere}
 @media(max-width:420px){.mbd-auth-inner{padding:24px 20px}.mbd-auth-dialog{border-radius:14px}.mbd-auth-links{gap:8px}}
 @media(prefers-reduced-motion:reduce){.mbd-auth-dialog::backdrop{backdrop-filter:none}}
+
+/* PR-002 registration fields — original dialog width and page styling unchanged. */
+.mbd-auth-optional{font-weight:400;color:#687176}
