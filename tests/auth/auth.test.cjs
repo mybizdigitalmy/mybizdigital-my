@@ -3,6 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 const policy = require('../../assets/auth-policy.js');
 const root = path.resolve(__dirname, '../..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
@@ -69,7 +70,17 @@ test('frontend integration is staging-scoped and no live checkout is enabled', (
   assert.ok(!/https?:\/\/[^'"\u0060\s]*hitpay/i.test(ui));
   assert.ok(ui.includes('uppercase, lowercase, a number and a special character'));
   assert.ok(ui.includes('Use 12–128 characters with uppercase and lowercase letters, a number and a special character.'));
-  assert.ok(cfg.includes("apiKey: ''"));
+  // Valid in two safe states: blank placeholders before activation, or valid staging-only web config.
+  // Evaluate in an isolated VM context: no network or Firebase SDK; never print API key or app ID.
+  const sandbox = { window: {} };
+  vm.runInNewContext(cfg, sandbox, { timeout: 1000, filename: 'auth-staging-config.js' });
+  const publicConfig = sandbox.window.__MBD_FIREBASE_STAGING_CONFIG;
+  assert.ok(publicConfig && typeof publicConfig === 'object');
+  assert.equal(publicConfig.projectId, 'mybizdigital-staging');
+  assert.equal(publicConfig.authDomain, 'mybizdigital-staging.firebaseapp.com');
+  const isUnconfigured = publicConfig.apiKey === '' && publicConfig.appId === '';
+  assert.ok(isUnconfigured || policy.configValid(publicConfig),
+    'Public Firebase config must be entirely blank or valid for the staging project');
   assert.ok(build.includes("'contact.html'"));
   assert.ok(build.includes("'assets', 'demos', 'apps'"));
   assert.equal(JSON.parse(header).hosting.target,'staging-site');
