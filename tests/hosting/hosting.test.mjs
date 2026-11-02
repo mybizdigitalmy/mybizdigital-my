@@ -13,7 +13,7 @@ const rootPages = [
   'order-support.html', 'privacy-policy.html', 'product-support.html',
   'terms-and-conditions.html', 'web-development.html'
 ];
-const publicDirectories = ['assets', 'demos', 'apps'];
+const publicDirectories = ['assets', 'demos', 'apps', 'auth'];
 
 async function listFiles(directory, prefix = '') {
   const out = [];
@@ -47,14 +47,17 @@ test('staging config binds only the verified staging Hosting site, never product
     rule.headers.some(header => header.key === 'X-Robots-Tag' && header.value.includes('noindex'))));
 });
 
-test('180 public files and all 40 HTML pages are copied byte-for-byte', async () => {
+test('187 public files and original 40 pages plus premium email action page', async () => {
   const expected = rootPages.slice();
   for (const dir of publicDirectories) expected.push(...await listFiles(path.join(root, dir), dir));
   expected.sort();
   const actual = await listFiles(dist);
   assert.deepEqual(actual, expected);
-  assert.equal(actual.filter(file => file.endsWith('.html')).length, 40);
-  assert.equal(actual.length, 180, 'Pinned to the audited baseline');
+  assert.equal(actual.filter(file => file.endsWith('.html')).length, 41);
+  assert.ok(actual.includes('auth/action.html'));
+  assert.ok(actual.includes('assets/auth-action.css'));
+  assert.ok(actual.includes('assets/auth-action.js'));
+  assert.equal(actual.length, 187, '184 unchanged public files plus three new premium email-action files');
   for (const file of actual) {
     const original = await readFile(path.join(root, file));
     const built = await readFile(path.join(dist, file));
