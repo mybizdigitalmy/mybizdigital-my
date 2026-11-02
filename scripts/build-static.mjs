@@ -13,7 +13,7 @@ const rootPages = [
   'order-support.html', 'privacy-policy.html', 'product-support.html',
   'terms-and-conditions.html', 'web-development.html'
 ];
-const publicDirectories = ['assets', 'demos', 'apps'];
+const publicDirectories = ['assets', 'demos', 'apps', 'auth'];
 const publicExtensions = new Set([
   '.html', '.css', '.js', '.svg', '.webp', '.jpg', '.jpeg', '.png', '.mp4'
 ]);

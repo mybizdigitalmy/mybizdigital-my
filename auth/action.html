@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en-MY">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="color-scheme" content="light">
+  <title>Secure account actions | MyBizDigital</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/brand-logo.svg">
+  <link rel="stylesheet" href="../assets/auth-action.css">
+  <script src="../assets/auth-policy.js" defer></script>
+  <script src="../assets/auth-staging-config.js" defer></script>
+  <script src="../assets/auth-action.js" defer></script>
+</head>
+<body>
+  <main class="mbd-action-page">
+    <div class="mbd-action-layout">
+      <section class="mbd-action-editorial" aria-label="MyBizDigital account security">
+        <div class="mbd-action-editorial-top">
+          <span class="mbd-action-edition">MYBIZDIGITAL / DIGITAL COMMERCE</span>
+          <span class="mbd-action-edition">CUSTOMER ACCESS · 01</span>
+        </div>
+        <div class="mbd-action-editorial-center">
+          <span class="mbd-action-series">ACCOUNT SECURITY / MALAYSIA</span>
+          <h1>Secure access.<br><em>Simply done.</em></h1>
+          <p>Take the next step with confidence. A streamlined account experience built around clarity, security and control.</p>
+          <div class="mbd-action-rule" aria-hidden="true"><span></span><span></span><span></span></div>
+        </div>
+        <div class="mbd-action-editorial-bottom">
+          <span>MYBIZDIGITAL.MY</span>
+          <span>PRIVATE BY DESIGN. BUILT FOR BUSINESS.</span>
+        </div>
+      </section>
+      <section class="mbd-action-content" aria-labelledby="mbd-action-heading">
+        <header class="mbd-action-header">
+          <a class="mbd-action-brand" href="../index.html" aria-label="MyBizDigital home">
+            <img src="../assets/brand-logo.svg" width="34" height="34" alt="">
+            <span>MyBizDigital</span>
+          </a>
+          <span class="mbd-action-stage">STAGING PREVIEW</span>
+        </header>
+        <div class="mbd-action-body">
+          <div class="mbd-action-symbol" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="8" y="19" width="32" height="23" rx="6" stroke="currentColor" stroke-width="2.5"/>
+              <path d="M16 19v-6a8 8 0 0 1 16 0v6" stroke="currentColor" stroke-width="2.5"/>
+              <circle cx="24" cy="30" r="2.5" fill="currentColor"/>
+              <path d="M24 33v3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="mbd-action-eyebrow" id="mbd-action-eyebrow">ACCOUNT VERIFICATION</p>
+          <h2 id="mbd-action-heading">Preparing your secure link</h2>
+          <p id="mbd-action-description" class="mbd-action-description">Checking the request before continuing.</p>
+          <p class="mbd-action-status" role="status" aria-live="polite" id="mbd-action-status" hidden></p>
+
+          <section id="mbd-action-verify" hidden aria-label="Email verification">
+            <button class="mbd-action-button" type="button" id="mbd-action-verify-button" disabled>Complete verification <span aria-hidden="true">↗</span></button>
+          </section>
+
+          <section id="mbd-action-reset" hidden aria-label="Reset password">
+            <form id="mbd-action-reset-form" novalidate>
+              <p class="mbd-action-account" id="mbd-action-account"></p>
+              <label for="mbd-action-new-password">New password</label>
+              <div class="mbd-action-password-wrap">
+                <input id="mbd-action-new-password" name="newPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128" aria-describedby="mbd-action-password-help">
+                <button class="mbd-action-eye" type="button" aria-controls="mbd-action-new-password" aria-label="Show password" aria-pressed="false" data-password-toggle="mbd-action-new-password"></button>
+              </div>
+              <p id="mbd-action-password-help" class="mbd-action-help">12–128 characters · uppercase · lowercase · number · special character.</p>
+              <label for="mbd-action-confirm-password">Confirm new password</label>
+              <div class="mbd-action-password-wrap">
+                <input id="mbd-action-confirm-password" name="confirmPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128">
+                <button class="mbd-action-eye" type="button" aria-controls="mbd-action-confirm-password" aria-label="Show password" aria-pressed="false" data-password-toggle="mbd-action-confirm-password"></button>
+              </div>
+              <button class="mbd-action-button" type="submit" disabled id="mbd-action-reset-button">Save new password <span aria-hidden="true">↗</span></button>
+            </form>
+          </section>
+
+          <div class="mbd-action-return">
+            <a href="../index.html#login" id="mbd-action-login-link" hidden>Return to login <span aria-hidden="true">↗</span></a>
+            <a href="../index.html" id="mbd-action-home-link">Back to MyBizDigital <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <footer class="mbd-action-footer">
+          <span>Only use links you requested. Never share a verification or reset link.</span>
+          <a href="../privacy-policy.html">Privacy notice</a>
+        </footer>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

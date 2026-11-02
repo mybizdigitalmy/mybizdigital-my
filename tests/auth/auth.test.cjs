@@ -127,3 +127,35 @@ test('registration includes optional name and matching-password protection befor
   assert.ok(ui.includes('dialog.querySelector(\'[data-auth-identity]\').textContent ='));
   assert.ok(!/\b(?:getFirestore|initializeFirestore|getFunctions|createPayment)\s*\(/.test(ui));
 });
+
+test('premium Firebase action page validates one-time links with secure password reset', () => {
+  const html = read('auth/action.html'), js = read('assets/auth-action.js'), css = read('assets/auth-action.css');
+  const build = read('scripts/build-static.mjs');
+  for (const needle of ['checkActionCode(auth, actionCode)', 'applyActionCode(auth, actionCode)',
+    'verifyPasswordResetCode(auth, actionCode)', 'confirmPasswordReset(auth, actionCode, password)',
+    'history.replaceState(null', 'password !== confirm', 'policy.strongPassword(password)',
+    'policy.stagingHost(location.hostname)', 'policy.configValid(config)']) assert.ok(js.includes(needle), needle);
+  assert.ok(js.indexOf('history.replaceState(null') < js.indexOf("import('https://www.gstatic.com/firebasejs/"));
+  assert.ok(js.indexOf('password !== confirm') < js.indexOf('sdk.confirmPasswordReset(auth, actionCode, password)'));
+  assert.ok(html.includes('<meta name="referrer" content="no-referrer">'));
+  assert.ok(html.includes('<meta name="robots" content="noindex,nofollow,noarchive">'));
+  for (const id of ['mbd-action-reset-form','mbd-action-verify-button','mbd-action-confirm-password']) assert.ok(html.includes('id="' + id + '"'));
+  assert.ok(html.includes('../assets/brand-logo.svg'));
+  assert.ok(html.includes('../assets/auth-policy.js'));
+  assert.ok(!js.includes('window.open('));
+  assert.ok(!/localStorage|sessionStorage|console\.(?:log|warn|error)|fetch\(/.test(js));
+  assert.ok(!/\b(?:getFirestore|createPayment|hitpay)\b/i.test(js));
+  assert.ok(css.includes('@media(max-width:720px)'));
+  assert.ok(build.includes("'assets', 'demos', 'apps', 'auth'"));
+});
+test('premium handler does not change sign-up, verification email or password-reset requests', () => {
+  const existing = read('assets/auth-staging.js');
+  assert.ok(existing.includes('sdk.createUserWithEmailAndPassword(auth, email, password)'));
+  assert.ok(existing.includes('sdk.sendEmailVerification(user,'));
+  assert.ok(existing.includes('sdk.sendPasswordResetEmail(auth, email,'));
+  assert.ok(existing.includes("password !== form.elements.confirmPassword.value"));
+  const html = read('auth/action.html');
+  assert.ok(!html.includes('data-netlify'));
+  assert.ok(!html.includes('<form action='));
+  assert.ok(html.includes('<form id="mbd-action-reset-form" novalidate>'));
+});
