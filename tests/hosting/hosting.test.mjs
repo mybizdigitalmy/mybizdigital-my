@@ -54,7 +54,7 @@ test('180 public files and all 40 HTML pages are copied byte-for-byte', async ()
   const actual = await listFiles(dist);
   assert.deepEqual(actual, expected);
   assert.equal(actual.filter(file => file.endsWith('.html')).length, 40);
-  assert.equal(actual.length, 180, 'Pinned to the audited baseline');
+  assert.equal(actual.length, 184, 'PR-002: pinned 180-file baseline plus four authentication assets');
   for (const file of actual) {
     const original = await readFile(path.join(root, file));
     const built = await readFile(path.join(dist, file));

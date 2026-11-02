@@ -1,0 +1,24 @@
+/* PR-002 — only the new authentication dialog. No global layout/footer changes. */
+.mbd-auth-dialog{box-sizing:border-box;width:min(440px,calc(100vw - 28px));max-height:min(90dvh,760px);margin:auto;padding:0;border:1px solid #e4e4e6;border-radius:18px;background:#fff;color:#141414;box-shadow:0 28px 90px rgba(0,0,0,.22);font-family:Inter,Arial,sans-serif;overflow-y:auto}
+.mbd-auth-dialog::backdrop{background:rgba(7,9,12,.65);backdrop-filter:blur(4px)}
+.mbd-auth-inner{padding:clamp(22px,5vw,34px);position:relative}
+.mbd-auth-close{position:absolute;right:15px;top:13px;border:1px solid #d8dadd;background:#fff;border-radius:50%;width:36px;height:36px;font-size:22px;cursor:pointer;color:#161616}
+.mbd-auth-kicker{font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:#555;font-weight:750;margin:0 46px 14px 0}
+.mbd-auth-dialog h2{font-size:clamp(25px,5vw,33px);font-weight:750;letter-spacing:-.045em;line-height:1.12;margin:0 0 14px;color:#141414}
+.mbd-auth-text{font-size:13px;color:#555f63;line-height:1.65;margin:0 0 22px}
+.mbd-auth-panel[hidden],.mbd-auth-dialog[hidden]{display:none!important}
+.mbd-auth-label{font-size:12px;font-weight:680;display:block;margin:17px 0 7px}
+.mbd-auth-input{box-sizing:border-box;width:100%;min-height:46px;border:1px solid #cfd3d5;border-radius:9px;background:#fff;padding:10px 13px;font:inherit;font-size:14px;color:#111}
+.mbd-auth-input:focus-visible,.mbd-auth-dialog button:focus-visible{outline:3px solid #586d83;outline-offset:3px}
+.mbd-auth-primary{display:block;width:100%;margin:24px 0 0;background:#111817;color:white;border:1px solid #111817;border-radius:9px;min-height:46px;padding:10px 18px;font-weight:700;cursor:pointer}
+.mbd-auth-primary:disabled,.mbd-auth-dialog button:disabled{opacity:.55;cursor:not-allowed}
+.mbd-auth-links{display:flex;flex-wrap:wrap;gap:14px;margin-top:18px;align-items:center}
+.mbd-auth-link{appearance:none;background:none;border:0;text-decoration:underline;text-underline-offset:4px;color:#1c2525;font-size:12px;padding:6px 0;cursor:pointer}
+.mbd-auth-status{font-size:12px;line-height:1.55;margin:14px 0 0;padding:11px 13px;border-radius:8px;background:#eff2f3;color:#182527}
+.mbd-auth-status[data-kind="error"]{background:#fff2ed;color:#8a2716}
+.mbd-auth-status:empty{display:none}
+.mbd-auth-legal{font-size:11px;line-height:1.6;color:#626a70;margin:20px 0 0}
+.mbd-auth-legal a{text-decoration:underline;color:#222}
+.mbd-auth-identity{font-weight:650;overflow-wrap:anywhere}
+@media(max-width:420px){.mbd-auth-inner{padding:24px 20px}.mbd-auth-dialog{border-radius:14px}.mbd-auth-links{gap:8px}}
+@media(prefers-reduced-motion:reduce){.mbd-auth-dialog::backdrop{backdrop-filter:none}}
