@@ -102,6 +102,9 @@ test('login and signup passwords have independently labelled and keyboard-operab
   assert.ok(css.includes('.mbd-auth-password-field'));
   assert.ok(css.includes('padding-right:57px'));
   assert.ok(css.includes('.mbd-auth-password-toggle'));
+  // A hidden password shows a crossed-out eye; the open eye means text is visible.
+  assert.ok(css.includes('.mbd-auth-password-toggle[aria-pressed="true"] .mbd-auth-eye-slash{display:none}'));
+  assert.ok(!css.includes('.mbd-auth-password-toggle[aria-pressed="false"] .mbd-auth-eye-slash{display:none}'));
   assert.ok(ui.includes('autocomplete="current-password"'));
   assert.ok(ui.includes('autocomplete="new-password"'));
 });

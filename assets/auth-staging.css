@@ -13,7 +13,7 @@
 .mbd-auth-password-field .mbd-auth-input{padding-right:57px}
 .mbd-auth-password-toggle{position:absolute;top:50%;right:5px;transform:translateY(-50%);display:grid;place-items:center;width:42px;height:42px;border:0;border-radius:8px;background:transparent;color:#515c62;cursor:pointer;touch-action:manipulation}
 .mbd-auth-password-toggle:hover{background:#f0f2f2;color:#141b1b}
-.mbd-auth-password-toggle[aria-pressed="false"] .mbd-auth-eye-slash{display:none}
+.mbd-auth-password-toggle[aria-pressed="true"] .mbd-auth-eye-slash{display:none}
 .mbd-auth-input:focus-visible,.mbd-auth-dialog button:focus-visible{outline:3px solid #586d83;outline-offset:3px}
 .mbd-auth-primary{display:block;width:100%;margin:24px 0 0;background:#111817;color:white;border:1px solid #111817;border-radius:9px;min-height:46px;padding:10px 18px;font-weight:700;cursor:pointer}
 .mbd-auth-primary:disabled,.mbd-auth-dialog button:disabled{opacity:.55;cursor:not-allowed}
