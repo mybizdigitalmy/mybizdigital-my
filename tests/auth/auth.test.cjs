@@ -97,7 +97,7 @@ test('login and signup passwords have independently labelled and keyboard-operab
   assert.ok(ui.includes("field.type = reveal ? 'text' : 'password'"));
   assert.ok(ui.includes("reveal ? 'Hide password' : 'Show password'"));
   assert.ok(ui.includes('function concealPasswords()'));
-  assert.ok(ui.includes("dialog.addEventListener('close', () => {\n    concealPasswords();"));
+  assert.match(ui, /dialog\.addEventListener\('close', \(\) => \{\r?\n\s*concealPasswords\(\);/);
   assert.ok(ui.includes(':not([data-auth-toggle-password])'));
   assert.ok(css.includes('.mbd-auth-password-field'));
   assert.ok(css.includes('padding-right:57px'));
