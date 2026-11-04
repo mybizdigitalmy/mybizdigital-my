@@ -105,7 +105,11 @@
   }
   function createId(){
     if(window.crypto?.randomUUID)return window.crypto.randomUUID();
-    return 'mbd-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
+    if(!window.crypto?.getRandomValues)throw Error('Secure random IDs are not available in this browser.');
+    const bytes=window.crypto.getRandomValues(new Uint8Array(16));
+    bytes[6]=(bytes[6]&15)|64; bytes[8]=(bytes[8]&63)|128;
+    const h=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
+    return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;
   }
   function finish(form,receipt){
     const confirmation=document.createElement('section');
