@@ -34,7 +34,7 @@ test('staging config binds only the verified staging Hosting site, never product
   const rc = JSON.parse(await readFile(path.join(root, '.firebaserc'), 'utf8'));
   assert.equal(config.hosting.target, 'staging-site');
   assert.equal(config.hosting.public, 'dist');
-  assert.equal(config.hosting.rewrites, undefined);
+  assert.deepEqual(config.hosting.rewrites, [{ source:'/api/enquiry', function:{functionId:'submitEnquiry',region:'asia-southeast1'} }]);
   assert.equal(config.hosting.redirects, undefined);
   assert.deepEqual(rc.projects, { staging: 'mybizdigital-staging' });
   assert.deepEqual(rc.targets, {
@@ -47,14 +47,14 @@ test('staging config binds only the verified staging Hosting site, never product
     rule.headers.some(header => header.key === 'X-Robots-Tag' && header.value.includes('noindex'))));
 });
 
-test('180 public files and all 40 HTML pages are copied byte-for-byte', async () => {
+test('181 public files and all 40 HTML pages are copied byte-for-byte', async () => {
   const expected = rootPages.slice();
   for (const dir of publicDirectories) expected.push(...await listFiles(path.join(root, dir), dir));
   expected.sort();
   const actual = await listFiles(dist);
   assert.deepEqual(actual, expected);
   assert.equal(actual.filter(file => file.endsWith('.html')).length, 40);
-  assert.equal(actual.length, 180, 'Pinned to the audited baseline');
+  assert.equal(actual.length, 181, 'Pinned to the audited baseline');
   for (const file of actual) {
     const original = await readFile(path.join(root, file));
     const built = await readFile(path.join(dist, file));

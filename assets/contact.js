@@ -11,6 +11,70 @@
   const canUseDialog = typeof HTMLDialogElement !== 'undefined' && typeof HTMLDialogElement.prototype.showModal === 'function';
   let dialogPromise;
   let lastTrigger = null;
+  let configPromise, turnstilePromise;
+  const challengeIds = new WeakMap();
+  function configuration(){
+    if(!configPromise)configPromise=new Promise((resolve,reject)=>{
+      const script=document.createElement('script');
+      script.src='assets/enquiry-public-config.js';
+      script.async=true;
+      script.onload=()=>{
+        const c=window.MBD_ENQUIRY_PUBLIC_CONFIG;
+        if(c?.endpoint!=='/api/enquiry'||!/^[-_A-Za-z0-9]{20,100}$/.test(c?.turnstileSiteKey||''))return reject(Error('Enquiry is not configured'));
+        resolve(c);
+      };
+      script.onerror=()=>reject(Error('Configuration unavailable'));
+      document.head.appendChild(script);
+    });
+    return configPromise;
+  }
+  function turnstileLibrary(){
+    if(window.turnstile)return Promise.resolve(window.turnstile);
+    if(!turnstilePromise)turnstilePromise=new Promise((resolve,reject)=>{
+      const script=document.createElement('script');
+      script.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async=true; script.defer=true;
+      script.onload=()=>window.turnstile?resolve(window.turnstile):reject(Error('Challenge unavailable'));
+      script.onerror=()=>reject(Error('Challenge unavailable'));
+      document.head.appendChild(script);
+    });
+    return turnstilePromise;
+  }
+  async function prepareChallenge(form){
+    const c=await configuration();
+    const ts=await turnstileLibrary();
+    if(challengeIds.has(form))return c;
+    const mount=document.createElement('div');
+    mount.className='mbd-contact-wide';
+    mount.setAttribute('aria-label','Spam verification');
+    form.querySelector('.mbd-contact-error')?.before(mount);
+    const id=ts.render(mount,{sitekey:c.turnstileSiteKey,action:'mbd_enquiry',theme:'auto'});
+    challengeIds.set(form,id);
+    return c;
+  }
+  function resetChallenge(form){
+    const id=challengeIds.get(form);
+    if(id!==undefined && window.turnstile)window.turnstile.reset(id);
+  }
+  async function encodeFile(file){
+    const bytes=new Uint8Array(await file.arrayBuffer());
+    let binary='';
+    for(let i=0;i<bytes.length;i+=16384)binary+=String.fromCharCode(...bytes.subarray(i,i+16384));
+    return {name:file.name,data:btoa(binary)};
+  }
+  async function makeRequest(form){
+    const config=await prepareChallenge(form);
+    const token=window.turnstile?.getResponse(challengeIds.get(form))||'';
+    if(!token)throw Error('Complete spam verification before submitting.');
+    const formData=new FormData(form);
+    const fields={};
+    const files={};
+    for(const [key,value] of formData.entries()){
+      if(value instanceof File){if(value.size)files[key]=await encodeFile(value);}
+      else fields[key]=String(value);
+    }
+    return {endpoint:config.endpoint, body:{fields,files,turnstileToken:token}};
+  }
 
   function updateConditions(form){
     const type=form.elements.enquiry_type.value;
@@ -43,12 +107,14 @@
     if(window.crypto?.randomUUID)return window.crypto.randomUUID();
     return 'mbd-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
   }
-  function finish(form){
+  function finish(form,receipt){
     const confirmation=document.createElement('section');
     confirmation.className='mbd-contact-success';
     confirmation.setAttribute('role','status');
     confirmation.setAttribute('tabindex','-1');
-    confirmation.innerHTML='<h3>Successfully Submitted</h3><p>Thank you for choosing MyBizDigital.my.<br>Your enquiry has been received. Our team will review your requirements and respond as soon as possible.<br>An acknowledgement email will be sent separately to the email address provided.</p>';
+    confirmation.innerHTML='<h3>Enquiry Received</h3><p>Your enquiry has been securely recorded. Our team will review it and reply as soon as possible. A separate acknowledgement email may follow; email delivery is not guaranteed.</p>';
+    // Never imply email delivery or an order was confirmed merely from an HTTP response.
+    const line=document.createElement('p'); line.textContent='Reference: '+receipt; confirmation.append(line);
     form.replaceWith(confirmation);
     confirmation.focus();
   }
@@ -58,6 +124,8 @@
     const input=form.elements.enquiry_type;
     input?.addEventListener('change',()=>updateConditions(form));
     updateConditions(form);
+    // Missing public configuration fails closed; staging guard remains authoritative until activation.
+    prepareChallenge(form).catch(()=>{});
     form.addEventListener('submit',async event=>{
       event.preventDefault();
       if(!form.reportValidity())return;
@@ -70,12 +138,14 @@
       btn.textContent='Submitting…';
       try{
         if(!form.elements.client_submission_id.value)form.elements.client_submission_id.value=createId();
-        // Multipart FormData is required for Netlify Forms attachments. Browser sets the boundary.
-        const response=await fetch('/',{method:'POST',body:new FormData(form),headers:{Accept:'text/html'}});
-        if(!response.ok)throw new Error(`Form service returned ${response.status}`);
-        finish(form);
+        const request=await makeRequest(form);
+        const response=await fetch(request.endpoint,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(request.body),cache:'no-store'});
+        const result=await response.json().catch(()=>({}));
+        if(response.status!==202 || result.ok!==true || !/^MBD-[A-F0-9]{12}$/.test(result.receipt||''))throw Error(result.error||'Enquiry service unavailable.');
+        finish(form,result.receipt);
       }catch(e){
-        error(form,'Your enquiry could not be submitted. Please try again or email support@mybizdigital.my directly.');
+        resetChallenge(form);
+        error(form,'Your enquiry could not be submitted. '+(e.message==='Complete spam verification before submitting.'?e.message:'Please try again or email support@mybizdigital.my directly.'));
         btn.disabled=false;
         btn.textContent=original;
       }
