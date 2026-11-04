@@ -52,7 +52,7 @@ function ctx(ip) {
       await db.runTransaction(async tx=>{
         const snap=await tx.get(ref);const count=(snap.exists?snap.data().count:0)||0;
         if(count>=limit)throw err(429,'Too many enquiries. Please try later or email support@mybizdigital.my.');
-        tx.set(ref,{count:count+1,updatedAt:now().toISOString()});
+        tx.set(ref,{count:count+1,updatedAt:now().toISOString(),expireAt:new Date(now().getTime()+2*3600_000)});
       });
     },
     fetchFn:async(url,opts)=>fetch(emulatorOverride('PR003_TEST_TURNSTILE_URL')||url,opts),
