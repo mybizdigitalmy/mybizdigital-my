@@ -1,23 +1,23 @@
 {
+  "functions": { "source": "functions" },
+  "firestore": { "rules": "firestore.pr003.rules" },
+  "storage": { "rules": "storage.pr003.rules" },
   "hosting": {
     "target": "staging-site",
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "headers": [
-      {
-        "source": "**",
-        "headers": [
-          { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
-          { "key": "X-Content-Type-Options", "value": "nosniff" },
-          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-        ]
-      },
-      {
-        "source": "**/*.html",
-        "headers": [
-          { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
-        ]
-      }
-    ]
+      {"source":"**", "headers":[
+        {"key":"X-Robots-Tag", "value":"noindex, nofollow, noarchive"},
+        {"key":"X-Content-Type-Options", "value":"nosniff"},
+        {"key":"Referrer-Policy", "value":"strict-origin-when-cross-origin"}
+      ]},
+      {"source":"**/*.html", "headers":[{"key":"Cache-Control", "value":"no-cache, must-revalidate"}]}
+    ],
+    "rewrites": [{"source":"/api/enquiry", "function":{"functionId":"submitEnquiry","region":"asia-southeast1"}}]
+  },
+  "emulators": {
+    "functions":{"port":5001},"firestore":{"port":8080},
+    "storage":{"port":9199},"hosting":{"port":5000},"ui":{"enabled":false}
   }
 }

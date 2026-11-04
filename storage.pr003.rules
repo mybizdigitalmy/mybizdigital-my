@@ -1,0 +1,7 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Quarantined customer attachments are never available via client SDK.
+    match /{path=**} { allow read, write: if false; }
+  }
+}
