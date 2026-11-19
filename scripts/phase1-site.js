@@ -30,7 +30,20 @@
   document.body.append(float);
   const footer = document.getElementById('mbd-site-footer');
   let footerVisible = false;
-  const syncFloat = () => { float.hidden = footerVisible || !!document.querySelector('.site-header.menu-open'); };
+  const productSection = document.getElementById('products');
+  const productInView = () => {
+    if (!productSection) return false;
+    const rect = productSection.getBoundingClientRect();
+    return rect.top < window.innerHeight && rect.bottom > 0;
+  };
+  const syncFloat = () => {
+    float.hidden = footerVisible || productInView() ||
+      !!document.querySelector('.site-header.menu-open') ||
+      !!document.querySelector('.mbd-phase1-product-root:not([hidden])');
+  };
+  window.addEventListener('scroll', syncFloat, {passive:true});
+  window.addEventListener('resize', syncFloat, {passive:true});
+  syncFloat();
   if (footer && 'IntersectionObserver' in window) {
     new IntersectionObserver(entries => { footerVisible = !!entries[0]?.isIntersecting; syncFloat(); }).observe(footer);
   }
@@ -113,11 +126,14 @@
     content.innerHTML = `<div class="mbd-product-layout">${productArt}<div class="mbd-product-config"><h2 class="mbd-config-title">${escapeText(product.name)}</h2><p class="mbd-config-description">${escapeText(product.description)}</p><div class="mbd-price-row"><strong>${escapeText(product.price)}</strong><span>${food?'per 10-stand bundle':'per NFC stand'}</span></div><div class="mbd-config-box"><h3>Enquire about this NFC stand</h3><p class="mbd-help-copy">Explore the options below. No order, checkout or payment is submitted by this website.</p><label class="mbd-phase1-field">Business / profile name (optional) <input id="mbd-business" type="text" maxlength="100" autocomplete="off" placeholder="Your business name"></label>${food?foodMode:'<label class="mbd-phase1-field">Profile / destination link (optional) <input id="mbd-url" type="url" maxlength="500" placeholder="https://example.com"></label>'}</div><div class="mbd-config-quantity"><div><strong style="font-size:13px">${food?'Bundle quantity':'Quantity'}</strong><div style="font-size:11px;color:#797b82;margin-top:4px">${food?'One bundle = 10 NFC stands':'Per NFC stand'}</div></div>${controls}</div><div class="mbd-config-actions"><button type="button" class="mbd-cta mbd-cta--secondary" data-phase1-close="true">Back</button><button type="button" class="mbd-cta" data-phase1-whatsapp="true">Enquire on WhatsApp</button></div><p class="mbd-phase1-disclaimer">WhatsApp opens a draft message. You choose whether to send it; this website does not collect your details.</p></div></div>`;
     if (food) renderFoodFields();
     overlay.hidden = false;
+    syncFloat();
     document.body.classList.add('mbd-commerce-locked');
     modal.focus({preventScroll:true});
   }
   function closeDetails() {
-    overlay.hidden = true; active = null; document.body.classList.remove('mbd-commerce-locked');
+    overlay.hidden = true;
+    syncFloat();
+    active = null; document.body.classList.remove('mbd-commerce-locked');
     if (previousFocus?.isConnected) previousFocus.focus({preventScroll:true});
   }
   function messageFor(product, includeConfig=false) {
