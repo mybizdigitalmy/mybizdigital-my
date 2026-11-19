@@ -1,0 +1,28 @@
+/* PHASE1-001: exclusively additive, scoped styles for the enquiry-only release. */
+.mbd-phase1-whatsapp-float{position:fixed;right:24px;bottom:24px;z-index:900;display:inline-flex;gap:8px;align-items:center;justify-content:center;padding:11px 15px;border:1px solid #dedfe3;border-radius:999px;background:#111;color:#fff;font:650 13px/1.2 Inter,Arial,sans-serif;text-decoration:none;box-shadow:0 12px 32px rgba(0,0,0,.14)}
+.mbd-phase1-whatsapp-float svg{display:block;width:20px;height:20px;flex-shrink:0}
+.mbd-phase1-whatsapp-float:hover{background:#252525;color:#fff}
+.mbd-phase1-whatsapp-float:focus-visible{outline:3px solid #237e56;outline-offset:4px}
+.mbd-phase1-whatsapp-float[hidden]{display:none!important}
+.mbd-phase1-product-root[hidden]{display:none!important}
+.mbd-phase1-product-root .mbd-config-actions{grid-template-columns:1fr 1.35fr}
+.mbd-phase1-product-root .mbd-card-cta{white-space:normal}
+.mbd-phase1-field{display:grid;gap:8px;font-size:12px;color:#555;margin:12px 0}
+.mbd-phase1-field input{box-sizing:border-box;width:100%;min-width:0;border:1px solid #dedfe3;border-radius:9px;background:#fff;padding:11px;font:inherit;color:#161616}
+.mbd-phase1-field input:focus-visible{outline:2px solid #111;outline-offset:2px}
+.mbd-phase1-food-modes{display:grid;gap:10px;margin:12px 0}
+.mbd-phase1-food-modes label{display:flex;align-items:center;gap:8px;font-size:12px;line-height:1.5}
+.mbd-phase1-disclaimer{font-size:11px;line-height:1.6;color:#667070;margin:14px 0 0}
+.mbd-phase1-contact .mbd-contact-submit{width:fit-content;max-width:100%}
+.mbd-phase1-contact .mbd-phase1-email-label a{color:inherit;font-weight:700;overflow-wrap:anywhere}
+.products-section .mbd-card-actions .mbd-card-cta{white-space:normal;line-height:1.25;padding:8px 6px}
+@media(max-width:600px){.mbd-phase1-whatsapp-float{right:14px;bottom:calc(14px + env(safe-area-inset-bottom));padding:11px 12px;font-size:12px}.mbd-phase1-product-root .mbd-config-actions{grid-template-columns:1fr 1.35fr}}
+/* The original purchase buttons were much shorter. Keep the same card widths and
+   uniform rows while allocating enough width for readable enquiry CTAs. */
+.products-section .product-buy-row{display:flex;flex-direction:column;align-items:stretch;gap:10px}
+.products-section .mbd-card-actions{width:100%;grid-template-columns:minmax(0,1fr) minmax(0,1.65fr);gap:8px}
+.products-section .mbd-card-actions .mbd-card-cta{min-height:40px}
+/* Override older V1.93 commerce-button grid specificity only inside Phase 1 cards. */
+.products-section .product-card .product-buy-row{display:flex;flex-direction:column;align-items:stretch;gap:9px}
+.products-section .product-card .product-buy-row .mbd-card-actions{display:grid;width:100%;grid-template-columns:minmax(0,1fr) minmax(0,1.65fr);gap:8px;justify-content:stretch;margin:0}
+.products-section .product-card .product-buy-row .mbd-card-cta{min-height:40px;font-size:11px;padding:6px 8px}
