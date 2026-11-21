@@ -26,3 +26,11 @@
 .products-section .product-card .product-buy-row{display:flex;flex-direction:column;align-items:stretch;gap:9px}
 .products-section .product-card .product-buy-row .mbd-card-actions{display:grid;width:100%;grid-template-columns:minmax(0,1fr) minmax(0,1.65fr);gap:8px;justify-content:stretch;margin:0}
 .products-section .product-card .product-buy-row .mbd-card-cta{min-height:40px;font-size:11px;padding:6px 8px}
+
+/* Option B only: lossless, user-controlled WhatsApp transfer fallback. */
+.mbd-phase1-transfer-status{display:grid;gap:10px;margin-top:12px;padding:13px;border:1px solid #dedfe3;border-radius:10px;font-size:12px;line-height:1.6;color:#30343b;overflow-wrap:anywhere}
+.mbd-phase1-transfer-status[hidden]{display:none!important}
+.mbd-phase1-transfer-status p{margin:0}
+.mbd-phase1-transfer-status textarea{width:100%;box-sizing:border-box;min-height:125px;resize:vertical;font:12px/1.5 ui-monospace,monospace;padding:10px;border:1px solid #dedfe3;border-radius:7px;background:#fff;color:#161616}
+.mbd-phase1-transfer-status a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.mbd-phase1-transfer-status :is(a,button,textarea):focus-visible{outline:2px solid #237e56;outline-offset:3px}

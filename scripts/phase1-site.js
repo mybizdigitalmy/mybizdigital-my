@@ -110,7 +110,7 @@
     const selected = content.querySelector('input[name="mbd-food-mode"]:checked')?.value || 'view';
     holder.innerHTML = selected === 'view'
       ? '<label class="mbd-phase1-field">Optional shared menu URL <input id="mbd-url" type="url" placeholder="https://restaurant.com/menu" maxlength="500"></label>'
-      : '<p class="mbd-field-tip">Option B uses ten table-specific ordering URLs supplied by your existing ordering platform. You can share them in WhatsApp.</p><div class="mbd-table-grid">' + Array.from({length:10},(_,i) => `<label class="mbd-phase1-field">Table ${String(i+1).padStart(2,'0')} link (optional)<input id="mbd-table-${i}" type="url" placeholder="https://restaurant.com/order/..." maxlength="500"></label>`).join('') + '</div>';
+      : '<p class="mbd-field-tip">Option B uses ten table-specific ordering URLs supplied by your existing ordering platform. You can share them in WhatsApp.</p><div class="mbd-table-grid">' + Array.from({length:10},(_,i) => `<label class="mbd-phase1-field">Table ${String(i+1).padStart(2,'0')} link (optional)<input id="mbd-table-${i}" type="url" placeholder="https://restaurant.com/order/..."></label>`).join('') + '</div>';
   }
   function openDetails(id) {
     const product = byId[id];
@@ -123,7 +123,7 @@
     const productArt = `<div class="mbd-product-art"><div class="mbd-product-image"><img id="mbd-detail-image" src="${escapeText(gallery[0].src)}" alt="${escapeText(gallery[0].alt || product.name)}"></div><div class="mbd-gallery-tabs" aria-label="Product image views">${gallery.map((img,i) => `<button type="button" data-phase1-image="${i}" aria-pressed="${i===0}">${escapeText(img.view)}</button>`).join('')}</div></div>`;
     const foodMode = '<div class="mbd-phase1-food-modes" role="group" aria-label="Food Menu setup option"><label><input type="radio" name="mbd-food-mode" value="view" checked> Option A — View Menu Only</label><label><input type="radio" name="mbd-food-mode" value="order"> Option B — Tap to Order by Table</label></div><div id="mbd-food-fields"></div>';
     const controls = food ? '<span class="mbd-bundle-lock">1 bundle · 10 stands</span>' : '<div class="mbd-qty-control"><button type="button" data-phase1-qty="minus" aria-label="Decrease quantity">−</button><output id="mbd-quantity">1</output><button type="button" data-phase1-qty="plus" aria-label="Increase quantity">+</button></div>';
-    content.innerHTML = `<div class="mbd-product-layout">${productArt}<div class="mbd-product-config"><h2 class="mbd-config-title">${escapeText(product.name)}</h2><p class="mbd-config-description">${escapeText(product.description)}</p><div class="mbd-price-row"><strong>${escapeText(product.price)}</strong><span>${food?'per 10-stand bundle':'per NFC stand'}</span></div><div class="mbd-config-box"><h3>Enquire about this NFC stand</h3><p class="mbd-help-copy">Explore the options below. No order, checkout or payment is submitted by this website.</p><label class="mbd-phase1-field">Business / profile name (optional) <input id="mbd-business" type="text" maxlength="100" autocomplete="off" placeholder="Your business name"></label>${food?foodMode:'<label class="mbd-phase1-field">Profile / destination link (optional) <input id="mbd-url" type="url" maxlength="500" placeholder="https://example.com"></label>'}</div><div class="mbd-config-quantity"><div><strong style="font-size:13px">${food?'Bundle quantity':'Quantity'}</strong><div style="font-size:11px;color:#797b82;margin-top:4px">${food?'One bundle = 10 NFC stands':'Per NFC stand'}</div></div>${controls}</div><div class="mbd-config-actions"><button type="button" class="mbd-cta mbd-cta--secondary" data-phase1-close="true">Back</button><button type="button" class="mbd-cta" data-phase1-whatsapp="true">Enquire on WhatsApp</button></div><p class="mbd-phase1-disclaimer">WhatsApp opens a draft message. You choose whether to send it; this website does not collect your details.</p></div></div>`;
+    content.innerHTML = `<div class="mbd-product-layout">${productArt}<div class="mbd-product-config"><h2 class="mbd-config-title">${escapeText(product.name)}</h2><p class="mbd-config-description">${escapeText(product.description)}</p><div class="mbd-price-row"><strong>${escapeText(product.price)}</strong><span>${food?'per 10-stand bundle':'per NFC stand'}</span></div><div class="mbd-config-box"><h3>Enquire about this NFC stand</h3><p class="mbd-help-copy">Explore the options below. No order, checkout or payment is submitted by this website.</p><label class="mbd-phase1-field">Business / profile name (optional) <input id="mbd-business" type="text" maxlength="100" autocomplete="off" placeholder="Your business name"></label>${food?foodMode:'<label class="mbd-phase1-field">Profile / destination link (optional) <input id="mbd-url" type="url" maxlength="500" placeholder="https://example.com"></label>'}</div><div class="mbd-config-quantity"><div><strong style="font-size:13px">${food?'Bundle quantity':'Quantity'}</strong><div style="font-size:11px;color:#797b82;margin-top:4px">${food?'One bundle = 10 NFC stands':'Per NFC stand'}</div></div>${controls}</div><div class="mbd-config-actions"><button type="button" class="mbd-cta mbd-cta--secondary" data-phase1-close="true">Back</button><button type="button" class="mbd-cta" data-phase1-whatsapp="true">Enquire on WhatsApp</button></div><div id="mbd-phase1-transfer-status" class="mbd-phase1-transfer-status" role="status" aria-live="polite" hidden></div><p class="mbd-phase1-disclaimer">WhatsApp opens a draft message. You choose whether to send it; this website does not collect your details.</p></div></div>`;
     if (food) renderFoodFields();
     overlay.hidden = false;
     syncFloat();
@@ -136,6 +136,73 @@
     active = null; document.body.classList.remove('mbd-commerce-locked');
     if (previousFocus?.isConnected) previousFocus.focus({preventScroll:true});
   }
+  // Conservative encoded-URL limit; platform-specific WhatsApp limits are not guaranteed.
+  const WHATSAPP_URL_SAFETY_LIMIT = 1800;
+  function clearTransferNotice() {
+    const status = content.querySelector('#mbd-phase1-transfer-status');
+    if (status) { status.hidden = true; status.replaceChildren(); }
+  }
+  function showTransferNotice(note, fullMessage=null) {
+    const status = content.querySelector('#mbd-phase1-transfer-status');
+    if (!status) return;
+    status.replaceChildren();
+    status.hidden = false;
+    const paragraph = document.createElement('p');
+    paragraph.textContent = note;
+    status.append(paragraph);
+    if (fullMessage === null) return;
+    const draft = document.createElement('textarea');
+    draft.readOnly = true;
+    draft.rows = 6;
+    draft.setAttribute('aria-label', 'Complete Food Menu Option B WhatsApp message');
+    draft.value = fullMessage;
+    status.append(draft);
+    const copy = document.createElement('button');
+    copy.type = 'button';
+    copy.className = 'mbd-cta mbd-cta--secondary';
+    copy.textContent = 'Copy complete message';
+    const feedback = document.createElement('p');
+    feedback.setAttribute('aria-live', 'polite');
+    copy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(draft.value);
+        feedback.textContent = 'Complete message copied. Paste it into WhatsApp before sending.';
+      } catch {
+        draft.focus();
+        draft.select();
+        feedback.textContent = 'Automatic copying is unavailable. Select and copy the complete message above manually.';
+      }
+    });
+    status.append(copy);
+    const handoff = document.createElement('a');
+    handoff.href = `https://wa.me/${NUMBER}`;
+    handoff.target = '_blank';
+    handoff.rel = 'noopener noreferrer';
+    handoff.textContent = 'Open WhatsApp to paste message';
+    status.append(handoff, feedback);
+  }
+  function optionBMessage(product) {
+    const lines = [
+      `Hello MyBizDigital, I'm interested in your ${product.name}. Please share more information and ordering details.`,
+      `${product.name} — Option B — Tap to Order by Table`,
+      'Price: RM800 per 10-stand bundle.',
+      'Package: 1 bundle of 10 NFC stands.'
+    ];
+    const business = content.querySelector('#mbd-business')?.value.trim();
+    if (business) lines.push(`Business: ${business}`);
+    for (let table=1; table<=10; table++) {
+      const raw = content.querySelector(`#mbd-table-${table-1}`)?.value.trim() || '';
+      if (!raw) continue; // Optional fields: do not invent links.
+      let parsed;
+      try { parsed = new URL(raw); } catch { /* handled below */ }
+      if (!parsed || !['http:', 'https:'].includes(parsed.protocol) || !parsed.hostname || parsed.username || parsed.password || /\s/.test(raw)) {
+        showTransferNotice(`Table ${String(table).padStart(2, '0')} has an invalid URL. Enter a complete http:// or https:// URL, or leave that optional field empty.`);
+        return null;
+      }
+      lines.push(`Table ${String(table).padStart(2, '0')}: ${raw}`);
+    }
+    return lines.join('\n');
+  }
   function messageFor(product, includeConfig=false) {
     const food = product.id === 'food';
     let message = standardEnquiry(food ? `${product.name} (RM800 per 10-stand bundle)` : product.name);
@@ -144,11 +211,8 @@
       if (!food && quantity > 1) message += `\nQuantity of NFC stands: ${quantity}.`;
       if (food) {
         const type = content.querySelector('input[name="mbd-food-mode"]:checked')?.value;
-        message += type === 'order' ? '\nSetup: Option B — Tap to Order by Table (10 table-specific links).' : '\nSetup: Option A — View Menu Only (one shared menu link).';
-        if (type === 'order') {
-          const count = [...content.querySelectorAll('[id^="mbd-table-"]')].filter(el => el.value.trim()).length;
-          if (count) message += `\nTable-specific links prepared: ${count} of 10 (details can be supplied in WhatsApp).`;
-        }
+        if (type === 'order') return optionBMessage(product);
+        message += '\nSetup: Option A — View Menu Only (one shared menu link).';
       }
       const business = content.querySelector('#mbd-business')?.value.trim();
       if (business) message += `\nBusiness name: ${business.slice(0,100)}.`;
@@ -170,7 +234,20 @@
   });
   overlay.addEventListener('click', event => {
     if (event.target.closest('[data-phase1-close]')) { closeDetails(); return; }
-    if (event.target.closest('[data-phase1-whatsapp]') && active) { openWhatsApp(messageFor(active,true)); return; }
+    if (event.target.closest('[data-phase1-whatsapp]') && active) {
+      clearTransferNotice();
+      const message = messageFor(active, true);
+      if (message === null) return; // Invalid optional URL was visibly explained.
+      if (active.id === 'food' && content.querySelector('input[name="mbd-food-mode"]:checked')?.value === 'order') {
+        const tooLong = url(message).length > WHATSAPP_URL_SAFETY_LIMIT;
+        showTransferNotice(tooLong
+          ? 'The complete enquiry may exceed a reliable WhatsApp link length. Copy the full draft below, open WhatsApp and paste it manually. No links have been removed.'
+          : 'WhatsApp opens a draft. If any links are missing, copy and paste the complete draft below.', message);
+        if (tooLong) return; // Avoid silently truncated prefilled WhatsApp messages.
+      }
+      openWhatsApp(message);
+      return;
+    }
     const imageButton = event.target.closest('[data-phase1-image]');
     if (imageButton) { setImage(Number(imageButton.dataset.phase1Image)); return; }
     const q = event.target.closest('[data-phase1-qty]');
@@ -179,7 +256,13 @@
       const display = content.querySelector('#mbd-quantity'); if(display) display.textContent = String(quantity);
     }
   });
-  overlay.addEventListener('change', event => { if (event.target.name==='mbd-food-mode') renderFoodFields(); });
+  overlay.addEventListener('change', event => {
+    clearTransferNotice();
+    if (event.target.name==='mbd-food-mode') renderFoodFields();
+  });
+  overlay.addEventListener('input', event => {
+    if (event.target.matches?.('input')) clearTransferNotice();
+  });
   overlay.querySelector('.mbd-commerce-backdrop')?.addEventListener('click', closeDetails);
   document.addEventListener('keydown', event => {
     if (overlay.hidden) return;
