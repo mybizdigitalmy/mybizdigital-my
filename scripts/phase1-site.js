@@ -51,6 +51,74 @@
   const header = document.querySelector('.site-header');
   if (header && 'MutationObserver' in window) new MutationObserver(syncFloat).observe(header, {attributes:true, attributeFilter:['class']});
 
+  // PHASE1-005: preserve the review cards, replace CSS-only motion with a native scroll lane.
+  // Three identical sets keep manual movement possible in either direction without a visible seam.
+  const reviewWindow = document.querySelector('.mbd-marquee-window');
+  const reviewTrack = reviewWindow?.querySelector('.mbd-marquee-track');
+  if (reviewWindow && reviewTrack) {
+    const firstSet = reviewTrack.querySelector('.mbd-marquee-set');
+    if (firstSet && reviewTrack.querySelectorAll('.mbd-marquee-set').length === 2) {
+      const clone = firstSet.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      clone.inert = true;
+      reviewTrack.append(clone);
+      reviewWindow.classList.add('mbd-phase1-review-scroll');
+      let setWidth = 0, lastFrame = 0, pausedUntil = 0, dragging = false, lastPointerX = 0;
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const hold = (duration=2400) => { pausedUntil = performance.now() + duration; };
+      const measure = () => {
+        const previous = setWidth;
+        setWidth = firstSet.getBoundingClientRect().width;
+        if (setWidth) reviewWindow.scrollLeft = setWidth + (previous ? reviewWindow.scrollLeft - previous : 0);
+      };
+      const wrap = () => {
+        if (!setWidth) return;
+        if (reviewWindow.scrollLeft < setWidth * .35) reviewWindow.scrollLeft += setWidth;
+        else if (reviewWindow.scrollLeft > setWidth * 1.65) reviewWindow.scrollLeft -= setWidth;
+      };
+      const frame = now => {
+        const delta = lastFrame ? Math.min(now - lastFrame, 80) : 0;
+        lastFrame = now;
+        wrap();
+        if (!reducedMotion.matches && !dragging && now >= pausedUntil && !document.hidden && setWidth) {
+          reviewWindow.scrollLeft += setWidth * delta / 138000;
+          wrap();
+        }
+        requestAnimationFrame(frame);
+      };
+      // Keyboard controls are available on the already-tab-focusable review region.
+      reviewWindow.addEventListener('keydown', event => {
+        if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+        event.preventDefault();
+        hold();
+        reviewWindow.scrollLeft += event.key === 'ArrowLeft' ? -160 : 160;
+        wrap();
+      });
+      reviewWindow.addEventListener('wheel', () => hold(), {passive:true});
+      reviewWindow.addEventListener('touchstart', () => hold(3500), {passive:true});
+      reviewWindow.addEventListener('touchend', () => hold(), {passive:true});
+      reviewWindow.addEventListener('pointerdown', event => {
+        if (event.pointerType === 'touch') return; // Let the browser handle native touch panning.
+        dragging = true;
+        lastPointerX = event.clientX;
+        hold();
+        if (reviewWindow.setPointerCapture) reviewWindow.setPointerCapture(event.pointerId);
+      });
+      reviewWindow.addEventListener('pointermove', event => {
+        if (!dragging) return;
+        reviewWindow.scrollLeft -= event.clientX - lastPointerX;
+        lastPointerX = event.clientX;
+        wrap();
+      });
+      const stop = () => { if (dragging) { dragging = false; hold(); } };
+      reviewWindow.addEventListener('pointerup', stop);
+      reviewWindow.addEventListener('pointercancel', stop);
+      reviewWindow.addEventListener('lostpointercapture', stop);
+      window.addEventListener('resize', measure, {passive:true});
+      requestAnimationFrame(() => { measure(); requestAnimationFrame(frame); });
+    }
+  }
+
   const cards = [...document.querySelectorAll('#products .product-card')];
   if (!cards.length) return;
   const ids = ['google','facebook','instagram','tiktok','food'];
@@ -123,7 +191,7 @@
     const productArt = `<div class="mbd-product-art"><div class="mbd-product-image"><img id="mbd-detail-image" src="${escapeText(gallery[0].src)}" alt="${escapeText(gallery[0].alt || product.name)}"></div><div class="mbd-gallery-tabs" aria-label="Product image views">${gallery.map((img,i) => `<button type="button" data-phase1-image="${i}" aria-pressed="${i===0}">${escapeText(img.view)}</button>`).join('')}</div></div>`;
     const foodMode = '<div class="mbd-phase1-food-modes" role="group" aria-label="Food Menu setup option"><label><input type="radio" name="mbd-food-mode" value="view" checked> Option A — View Menu Only</label><label><input type="radio" name="mbd-food-mode" value="order"> Option B — Tap to Order by Table</label></div><div id="mbd-food-fields"></div>';
     const controls = food ? '<span class="mbd-bundle-lock">1 bundle · 10 stands</span>' : '<div class="mbd-qty-control"><button type="button" data-phase1-qty="minus" aria-label="Decrease quantity">−</button><output id="mbd-quantity">1</output><button type="button" data-phase1-qty="plus" aria-label="Increase quantity">+</button></div>';
-    content.innerHTML = `<div class="mbd-product-layout">${productArt}<div class="mbd-product-config"><h2 class="mbd-config-title">${escapeText(product.name)}</h2><p class="mbd-config-description">${escapeText(product.description)}</p><div class="mbd-price-row"><strong>${escapeText(product.price)}</strong><span>${food?'per 10-stand bundle':'per NFC stand'}</span></div><div class="mbd-config-box"><h3>Enquire about this NFC stand</h3><p class="mbd-help-copy">Explore the options below. No order, checkout or payment is submitted by this website.</p><label class="mbd-phase1-field">Business / profile name (optional) <input id="mbd-business" type="text" maxlength="100" autocomplete="off" placeholder="Your business name"></label>${food?foodMode:'<label class="mbd-phase1-field">Profile / destination link (optional) <input id="mbd-url" type="url" maxlength="500" placeholder="https://example.com"></label>'}</div><div class="mbd-config-quantity"><div><strong style="font-size:13px">${food?'Bundle quantity':'Quantity'}</strong><div style="font-size:11px;color:#797b82;margin-top:4px">${food?'One bundle = 10 NFC stands':'Per NFC stand'}</div></div>${controls}</div><div class="mbd-config-actions"><button type="button" class="mbd-cta mbd-cta--secondary" data-phase1-close="true">Back</button><button type="button" class="mbd-cta" data-phase1-whatsapp="true">Enquire on WhatsApp</button></div><div id="mbd-phase1-transfer-status" class="mbd-phase1-transfer-status" role="status" aria-live="polite" hidden></div><p class="mbd-phase1-disclaimer">WhatsApp opens a draft message. You choose whether to send it; this website does not collect your details.</p></div></div>`;
+    content.innerHTML = `<div class="mbd-product-layout">${productArt}<div class="mbd-product-config"><h2 class="mbd-config-title">${escapeText(product.name)}</h2><p class="mbd-config-description">${escapeText(product.description)}</p><div class="mbd-price-row"><strong>${escapeText(product.price)}</strong><del class="mbd-phase1-regular-price">${food?'RM1,111':'RM111'}</del><span>${food?'per 10-stand bundle':'per NFC stand'}</span></div><div class="mbd-config-box"><h3>Enquire about this NFC stand</h3><p class="mbd-help-copy">Explore the options below. No order, checkout or payment is submitted by this website.</p><label class="mbd-phase1-field">Business / profile name (optional) <input id="mbd-business" type="text" maxlength="100" autocomplete="off" placeholder="Your business name"></label>${food?foodMode:'<label class="mbd-phase1-field">Profile / destination link (optional) <input id="mbd-url" type="url" maxlength="500" placeholder="https://example.com"></label>'}</div><div class="mbd-config-quantity"><div><strong style="font-size:13px">${food?'Bundle quantity':'Quantity'}</strong><div style="font-size:11px;color:#797b82;margin-top:4px">${food?'One bundle = 10 NFC stands':'Per NFC stand'}</div></div>${controls}</div><div class="mbd-config-actions"><button type="button" class="mbd-cta mbd-cta--secondary" data-phase1-close="true">Back</button><button type="button" class="mbd-cta" data-phase1-whatsapp="true">Enquire on WhatsApp</button></div><div id="mbd-phase1-transfer-status" class="mbd-phase1-transfer-status" role="status" aria-live="polite" hidden></div><p class="mbd-phase1-disclaimer">WhatsApp opens a draft message. You choose whether to send it; this website does not collect your details.</p></div></div>`;
     if (food) renderFoodFields();
     overlay.hidden = false;
     syncFloat();

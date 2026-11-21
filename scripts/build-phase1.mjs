@@ -63,7 +63,56 @@ function phase1Home(html) {
   assert(html.includes('href="#products" id="shop">Shop NFC Stands</a>'), 'Shop NFC destination changed');
   assert((html.match(/data-product-card=""/g) || []).length === 5, 'five NFC product cards expected');
   html = fixProductSchema(html);
+  return phase1005Home(html);
+}
+function phase1005Home(html) {
+  const before = ['RM100', 'RM100', 'RM100', 'RM100', 'RM800 / 10 tables'];
+  const promo = ['RM100', 'RM100', 'RM100', 'RM100', 'RM800'];
+  const regular = ['RM111', 'RM111', 'RM111', 'RM111', 'RM1,111'];
+  let i = 0;
+  html = html.replace(/<span class="product-price">([^<]+)<\/span>/g, (_, current) => {
+    assert(i < 5 && current === before[i], `unexpected NFC card price at ${i + 1}: ${current}`);
+    const pair = `<span class="mbd-phase1-price-pair"><span class="product-price">${promo[i]}</span><del class="mbd-phase1-regular-price">${regular[i]}</del></span>`;
+    return pair + (i++ === 4 ? '<span class="mbd-phase1-bundle-note">10 NFC stands per bundle</span>' : '');
+  });
+  assert(i === 5, `expected 5 NFC price presentations, found ${i}`);
+  html = replaceOnce(html, 'Rated 5.0 by First-Time Buyers', 'NFC Experiences in Everyday Business', 'review heading');
+  html = replaceOnce(html,
+    'How MyBizDigital NFC Smart Stands support reviews, social engagement and digital menus. Illustrative feedback for preview only.',
+    'Sample business feedback scenarios only. The comments and business names shown are fictional, not verified customer reviews.', 'review disclosure');
+  const labels = (html.match(/ · Illustrative<\/span>/g) || []).length;
+  assert(labels === 60, `expected 60 sample industry labels across two sets, found ${labels}`);
+  html = html.replace(/ · Illustrative<\/span>/g, '</span>');
+  html = html.replace(/aria-label="Illustrative ([^"]+) feedback"/g, 'aria-label="Sample $1 feedback"');
+  html = html.replace(/aria-label="Five stars, illustrative"/g, 'aria-hidden="true"');
+  html = html.replace('aria-label="Scrolling illustrative feedback in Bahasa Malaysia and Malaysian English"',
+    'aria-label="Sample business feedback scenarios. Scroll horizontally or use the left and right arrow keys."');
   return html;
+}
+async function newsletterSettings() {
+  const settings = JSON.parse(await readFile(path.join(root, 'scripts/phase1-newsletter-config.json'), 'utf8'));
+  assert(settings.provider === 'buttondown' && typeof settings.enabled === 'boolean' &&
+    typeof settings.username === 'string', 'unexpected newsletter configuration');
+  assert(!settings.enabled || /^[A-Za-z0-9][A-Za-z0-9_-]{1,60}$/.test(settings.username),
+    'Newsletter activation requires a verified public Buttondown username');
+  return settings;
+}
+function phase1005Newsletter(html, settings) {
+  const privacy = '<a href="privacy-policy.html">Privacy Policy</a>';
+  const enabled = settings.enabled;
+  const nativeForm = enabled
+    ? `<form id="mbd-newsletter-form" class="mbd-f-subscribe-box" data-mbd-newsletter-ready method="post" action="https://buttondown.com/api/emails/embed-subscribe/${settings.username}" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to MyBizDigital updates"><input type="hidden" name="embed" value="1"><input type="email" name="email" aria-label="Newsletter email address" placeholder="you@email.com" autocomplete="email" maxlength="254" required><button type="submit">Notify me</button></form>`
+    : '<div class="mbd-f-subscribe-box" aria-label="Newsletter registration not yet enabled"><input type="email" aria-label="Email address (newsletter not available yet)" placeholder="you@email.com" disabled><button type="button" disabled title="Newsletter sign-ups coming soon">Notify me</button></div>';
+  const consent = enabled
+    ? `<label class="mbd-phase1-newsletter-consent"><input type="checkbox" form="mbd-newsletter-form" required> <span>I agree to receive product and business updates by email. I can unsubscribe at any time. See our ${privacy}.</span></label>`
+    : `<p class="mbd-phase1-newsletter-consent mbd-phase1-newsletter-unavailable">Marketing emails require explicit consent. See our ${privacy}.</p>`;
+  const note = enabled
+    ? 'Your email is sent directly to Buttondown for confirmation. Check the provider page and confirm by email; this site does not claim completion.'
+    : 'Newsletter sign-ups are not enabled until our provider is verified.';
+  const pattern = /<div\b(?=[^>]*class="mbd-f-subscribe-box")[^>]*>[\s\S]*?<\/div>\s*<span class="mbd-f-subscribe-note">[^<]*<\/span>/g;
+  const hits = html.match(pattern) || [];
+  assert(hits.length === 1, `expected one original newsletter footer, got ${hits.length}`);
+  return html.replace(pattern, nativeForm + '\n' + consent + '\n<span class="mbd-f-subscribe-note" role="status">' + note + '</span>');
 }
 function phase1Contact(html) {
   const message = 'Hello MyBizDigital, I would like to enquire about your NFC products, website design or business software services.';
@@ -98,12 +147,14 @@ async function main() {
   execFileSync(process.execPath, ['scripts/build-launch.mjs'], { cwd: root, stdio: 'inherit' });
   await copyFile(path.join(root, 'scripts/phase1-site.js'), path.join(dist, 'assets/phase1-site.js'));
   await copyFile(path.join(root, 'scripts/phase1-site.css'), path.join(dist, 'assets/phase1-site.css'));
+  const newsletter = await newsletterSettings();
   for (const page of rootPages) {
     const file = path.join(dist, page);
     let html = await readFile(file, 'utf8');
     html = preserveNavigationWithoutCommerce(html);
     if (page === 'index.html') html = phase1Home(html);
     if (page === 'contact.html') html = phase1Contact(html);
+    html = phase1005Newsletter(html, newsletter);
     html = addPhase1Assets(html);
     await writeFile(file, html, 'utf8');
   }

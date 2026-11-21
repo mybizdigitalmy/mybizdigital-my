@@ -56,7 +56,7 @@ test('Shop NFC retains exact approved destination and other homepage design/medi
  const home=await text('index.html');
  assert.match(home,/href="#products" id="shop">Shop NFC Stands<\/a>/);
  assert.equal((home.match(/data-product-card=""/g)||[]).length,5);
- for(const price of ['RM100','RM800 / 10 tables'])assert.ok(home.includes(price),price);
+ for(const price of ['RM100','RM800</span><del class="mbd-phase1-regular-price">RM1,111'])assert.ok(home.includes(price),price);
  assert.match(home,/data-carousel-viewport/);
  assert.match(home,/id="how-it-works"/);
  assert.match(home,/id="faq"/);

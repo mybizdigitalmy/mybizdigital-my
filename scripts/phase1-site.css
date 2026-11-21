@@ -34,3 +34,34 @@
 .mbd-phase1-transfer-status textarea{width:100%;box-sizing:border-box;min-height:125px;resize:vertical;font:12px/1.5 ui-monospace,monospace;padding:10px;border:1px solid #dedfe3;border-radius:7px;background:#fff;color:#161616}
 .mbd-phase1-transfer-status a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 .mbd-phase1-transfer-status :is(a,button,textarea):focus-visible{outline:2px solid #237e56;outline-offset:3px}
+
+/* PHASE1-005: original pricing order and card geometry; promotional figure remains prominent. */
+.products-section .mbd-phase1-price-pair{display:inline-flex;align-items:baseline;gap:9px;min-width:0;flex-wrap:nowrap}
+.products-section .mbd-phase1-price-pair .product-price{font-size:14px;flex:none}
+.mbd-phase1-regular-price{font-size:12px;font-weight:450;color:#858991;text-decoration:line-through;text-decoration-thickness:1px;white-space:nowrap}
+.mbd-phase1-product-root .mbd-price-row .mbd-phase1-regular-price{font-size:15px}
+.products-section .mbd-phase1-bundle-note{display:block;margin-top:-5px;font-size:10px;line-height:1.3;color:#747986}
+@media(max-width:600px){.products-section .mbd-phase1-price-pair{gap:7px}.products-section .mbd-phase1-regular-price{font-size:11px}}
+/* PHASE1-005: native manual review scrolling, with equivalent leftward continuous motion in JS. */
+.mbd-marquee-section .mbd-marquee-window.mbd-phase1-review-scroll{overflow-x:auto!important;scrollbar-width:none;overscroll-behavior-x:contain;cursor:grab;touch-action:pan-x pan-y}
+.mbd-marquee-section .mbd-marquee-window.mbd-phase1-review-scroll::-webkit-scrollbar{display:none}
+.mbd-marquee-section .mbd-phase1-review-scroll:active{cursor:grabbing}
+.mbd-marquee-section .mbd-phase1-review-scroll .mbd-marquee-track{animation:none!important;transform:none!important;will-change:auto}
+.mbd-marquee-section .mbd-phase1-review-scroll:focus-visible{outline:2px solid #237e56;outline-offset:-2px}
+/* PHASE1-005: preserve the existing pill input/button appearance; add consent below. */
+#mbd-site-footer .mbd-f-subscribe-box[data-mbd-newsletter-ready] input{cursor:text}
+#mbd-site-footer .mbd-f-subscribe-box[data-mbd-newsletter-ready] button{cursor:pointer}
+#mbd-site-footer .mbd-f-subscribe-box[data-mbd-newsletter-ready] input:focus-visible{outline:2px solid #fff;outline-offset:-4px;border-radius:999px}
+#mbd-site-footer .mbd-f-subscribe-box[data-mbd-newsletter-ready] button:focus-visible{outline:2px solid #73cfa6;outline-offset:3px}
+#mbd-site-footer .mbd-phase1-newsletter-consent{display:flex;gap:9px;align-items:flex-start;margin:11px 0 0 5px;font-size:11px;line-height:1.5;color:#a4a4a4}
+#mbd-site-footer .mbd-phase1-newsletter-consent input{margin-top:2px;accent-color:#fff;flex:none}
+#mbd-site-footer .mbd-phase1-newsletter-consent a{color:#fff;text-decoration:underline;text-underline-offset:2px}
+#mbd-site-footer .mbd-phase1-newsletter-unavailable{display:block}
+
+/* Retain the original promotional price's visual prominence on the Food Menu card. */
+.products-section .product-card.food-menu-fit .mbd-phase1-price-pair .product-price{font-size:14px}
+/* Drag affordance replaces the old pointer cursor only inside sample-feedback cards. */
+.mbd-marquee-section .mbd-phase1-review-scroll .mbd-marquee-card,
+.mbd-marquee-section .mbd-phase1-review-scroll .mbd-marquee-card *{cursor:grab!important}
+.mbd-marquee-section .mbd-phase1-review-scroll:active .mbd-marquee-card,
+.mbd-marquee-section .mbd-phase1-review-scroll:active .mbd-marquee-card *{cursor:grabbing!important}
