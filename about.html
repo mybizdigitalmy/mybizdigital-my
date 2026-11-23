@@ -216,7 +216,7 @@ a:focus-visible{outline:2px solid #171717;outline-offset:4px}
   #mbd-site-footer .mbd-f-nav a:focus-visible .roll-char-inner{transform:none!important}
 }
 </style>
-<link rel="stylesheet" href="assets/contact.css"><link rel="stylesheet" href="assets/page-alignment.css"></head>
+<link rel="stylesheet" href="assets/contact.css"><link rel="stylesheet" href="assets/page-alignment.css"><link rel="stylesheet" href="assets/brevo-newsletter.css"></head>
 <body>
 <div id="top"></div>
 <header class="about-header about-container" aria-label="About us page header">
@@ -283,11 +283,15 @@ a:focus-visible{outline:2px solid #171717;outline-offset:4px}
     <p class="mbd-f-subtitle">New NFC products, digital tools and business updates. No filler, just what's new.</p>
    </div>
    <div class="mbd-f-newsletter">
-    <div class="mbd-f-subscribe-box" aria-label="Newsletter registration not yet available">
-     <input type="email" aria-label="Email address (newsletter not available yet)" placeholder="you@email.com" disabled>
-     <button type="button" disabled title="Newsletter sign-ups coming soon">Notify me</button>
-    </div>
-    <span class="mbd-f-subscribe-note">Newsletter sign-ups are not available yet.</span>
+    <form class="mbd-f-subscribe-box" data-mbd-newsletter-form aria-label="Subscribe to MyBizDigital newsletter" novalidate>
+     <label class="visually-hidden" for="mbd-newsletter-email-about-html">Email address</label>
+     <input id="mbd-newsletter-email-about-html" type="email" name="email" autocomplete="email" placeholder="you@email.com" aria-label="Email address" maxlength="254" required>
+     <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="mbd-f-honeypot">
+     <button type="submit">Notify me</button>
+     <span class="mbd-f-turnstile" data-mbd-turnstile aria-hidden="true"></span>
+    </form>
+    <p class="mbd-f-inline-status" data-mbd-newsletter-status role="status" aria-live="polite" hidden></p>
+    <span class="mbd-f-subscribe-note">By subscribing, you agree to receive MyBizDigital product emails. Unsubscribe anytime. <a href="privacy-policy.html">Privacy Policy</a></span>
    </div>
   </section>
 
@@ -330,6 +334,8 @@ a:focus-visible{outline:2px solid #171717;outline-offset:4px}
  </div>
  <!-- SSM registration approved 23 October 2026. -->
 </footer>
+
+
 <script id="mbd-v196-footer-roll">
 (() => {
   const nav = document.querySelector('#mbd-site-footer .mbd-f-nav');
@@ -374,5 +380,5 @@ a:focus-visible{outline:2px solid #171717;outline-offset:4px}
   });
 })();
 </script>
-<script src="assets/contact.js" defer></script><script src="assets/page-entrance.js" defer></script></body>
+<script src="assets/contact.js" defer></script><script src="assets/page-entrance.js" defer></script><script src="assets/brevo-newsletter.js" defer></script></body>
 </html>

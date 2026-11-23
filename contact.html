@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en-MY"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Contact MyBizDigital for NFC Smart Stands, website design and business software enquiries in Malaysia."><title>Contact MyBizDigital | MYBIZ DIGITAL SOLUTIONS</title><link rel="icon" href="assets/brand-logo.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap"><link rel="stylesheet" href="assets/site-shell.css"><link rel="stylesheet" href="assets/library.css"><link rel="stylesheet" href="assets/contact.css"><link rel="stylesheet" href="assets/page-alignment.css"></head>
+<html lang="en-MY"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Contact MyBizDigital for NFC Smart Stands, website design and business software enquiries in Malaysia."><title>Contact MyBizDigital | MYBIZ DIGITAL SOLUTIONS</title><link rel="icon" href="assets/brand-logo.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap"><link rel="stylesheet" href="assets/site-shell.css"><link rel="stylesheet" href="assets/library.css"><link rel="stylesheet" href="assets/contact.css"><link rel="stylesheet" href="assets/page-alignment.css"><link rel="stylesheet" href="assets/brevo-newsletter.css"></head>
 <body class="library-page mbd-contact-page">
 <header aria-label="Main navigation" class="site-header">
 <div class="nav-inner">
@@ -88,12 +88,16 @@
 <p class="mbd-f-subtitle">New NFC products, digital tools and business updates. No filler, just what's new.</p>
 </div>
 <div class="mbd-f-newsletter">
-<div aria-label="Newsletter registration not yet available" class="mbd-f-subscribe-box">
-<input aria-label="Email address (newsletter not available yet)" disabled="" placeholder="you@email.com" type="email"/>
-<button disabled="" title="Newsletter sign-ups coming soon" type="button">Notify me</button>
-</div>
-<span class="mbd-f-subscribe-note">Newsletter sign-ups are not available yet.</span>
-</div>
+    <form class="mbd-f-subscribe-box" data-mbd-newsletter-form aria-label="Subscribe to MyBizDigital newsletter" novalidate>
+     <label class="visually-hidden" for="mbd-newsletter-email-contact-html">Email address</label>
+     <input id="mbd-newsletter-email-contact-html" type="email" name="email" autocomplete="email" placeholder="you@email.com" aria-label="Email address" maxlength="254" required>
+     <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="mbd-f-honeypot">
+     <button type="submit">Notify me</button>
+     <span class="mbd-f-turnstile" data-mbd-turnstile aria-hidden="true"></span>
+    </form>
+    <p class="mbd-f-inline-status" data-mbd-newsletter-status role="status" aria-live="polite" hidden></p>
+    <span class="mbd-f-subscribe-note">By subscribing, you agree to receive MyBizDigital product emails. Unsubscribe anytime. <a href="privacy-policy.html">Privacy Policy</a></span>
+   </div>
 </section>
 <div class="mbd-f-main">
 <div class="mbd-f-brand">
@@ -134,4 +138,6 @@
 </div>
 <!-- SSM registration approved 23 October 2026. -->
 </footer>
-<script src="assets/library.js" defer></script><script src="assets/footer-roll.js" defer></script><script src="assets/contact.js" defer></script><script src="assets/page-entrance.js" defer></script><script src="assets/cart-nav-count.js" defer></script></body></html>
+
+
+<script src="assets/library.js" defer></script><script src="assets/footer-roll.js" defer></script><script src="assets/contact.js" defer></script><script src="assets/page-entrance.js" defer></script><script src="assets/cart-nav-count.js" defer></script><script src="assets/brevo-newsletter.js" defer></script></body></html>

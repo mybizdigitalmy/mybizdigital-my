@@ -1,0 +1,46 @@
+/* Native HorizonX-inspired inline newsletter; reuse the existing approved footer. */
+#mbd-site-footer .visually-hidden{
+  position:absolute!important;width:1px!important;height:1px!important;
+  padding:0!important;margin:-1px!important;overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important
+}
+#mbd-site-footer .mbd-f-subscribe-box input[type="email"]{
+  appearance:none;min-width:0;flex:1 1 auto;width:100%;border:0;
+  outline:none;box-shadow:none;background:transparent;color:#fff;
+  padding:11px 18px;font:inherit;font-size:14px;cursor:text;
+}
+#mbd-site-footer .mbd-f-subscribe-box input[type="email"]::placeholder{color:#969696;opacity:1}
+#mbd-site-footer .mbd-f-subscribe-box input[type="email"]:focus-visible{
+  outline:2px solid #fff;outline-offset:-5px;border-radius:999px
+}
+#mbd-site-footer .mbd-f-subscribe-box button[type="submit"]{
+  cursor:pointer;opacity:1
+}
+#mbd-site-footer .mbd-f-subscribe-box button[type="submit"]:disabled{
+  cursor:progress;opacity:.7
+}
+#mbd-site-footer .mbd-f-subscribe-box button[type="submit"]:focus-visible{
+  outline:2px solid #fff;outline-offset:3px
+}
+#mbd-site-footer .mbd-f-honeypot{
+  position:absolute!important;width:1px!important;height:1px!important;
+  opacity:0!important;pointer-events:none!important;left:-9999px!important;
+}
+#mbd-site-footer .mbd-f-turnstile{
+  position:absolute;width:0;height:0;overflow:visible
+}
+#mbd-site-footer .mbd-f-inline-status{
+  display:block;margin:12px 0 0;padding:12px 15px;border-radius:8px;
+  font:500 13px/1.5 Inter,Arial,sans-serif
+}
+#mbd-site-footer .mbd-f-inline-status[hidden]{display:none}
+#mbd-site-footer .mbd-f-inline-status.is-success{
+  color:#166534;background:#dcfce7;border:1px solid #86efac
+}
+#mbd-site-footer .mbd-f-inline-status.is-error{
+  color:#fecaca;background:#3d1010;border:1px solid #7f1d1d
+}
+#mbd-site-footer .mbd-f-subscribe-note a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+@media(max-width:370px){
+  #mbd-site-footer .mbd-f-subscribe-box input[type="email"]{padding-left:13px;font-size:13px}
+}
