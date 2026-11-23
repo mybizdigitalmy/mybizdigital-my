@@ -1354,46 +1354,7 @@ body.mbd-commerce-locked{overflow:hidden!important}
   .products-section .product-buy-row .mbd-card-cta {font-size:9.5px;}
 }
 </style>
-<style id="mbd-brevo-newsletter-styles">
-/* Brevo double opt-in: existing footer layout is preserved; iframe loads on demand. */
-#mbd-site-footer .mbd-f-subscribe-box .mbd-f-email-trigger{
-  flex:1 1 auto;min-width:0;width:100%;min-height:44px;padding:11px 18px;
-  border:0;border-radius:999px;background:transparent;color:#969696;
-  text-align:left;font-size:14px;font-weight:400;letter-spacing:0;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer
-}
-#mbd-site-footer .mbd-f-subscribe-box .mbd-f-subscribe-action{cursor:pointer}
-#mbd-site-footer .mbd-f-subscribe-box button:focus-visible{outline:2px solid #fff;outline-offset:2px}
-#mbd-site-footer .mbd-f-subscribe-note a{color:inherit;text-decoration:underline;text-underline-offset:2px}
-#mbd-newsletter-dialog{
-  box-sizing:border-box;width:min(620px,calc(100vw - 28px));max-width:620px;
-  max-height:calc(100dvh - 28px);margin:auto;padding:0;border:0;
-  border-radius:16px;overflow:hidden;background:#fff;color:#121212;
-  box-shadow:0 24px 80px rgba(0,0,0,.28)
-}
-#mbd-newsletter-dialog::backdrop{background:rgba(0,0,0,.68)}
-#mbd-newsletter-dialog .mbd-newsletter-dialog-head{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb
-}
-#mbd-newsletter-dialog .mbd-newsletter-dialog-title{
-  margin:0;font:700 17px/1.4 Inter,Arial,sans-serif;color:#111
-}
-#mbd-newsletter-dialog .mbd-newsletter-dialog-close{
-  width:36px;height:36px;flex:0 0 36px;border:1px solid #d1d5db;
-  border-radius:999px;background:#fff;color:#111;font-size:22px;
-  line-height:30px;text-align:center;cursor:pointer
-}
-#mbd-newsletter-dialog .mbd-newsletter-dialog-close:focus-visible{outline:2px solid #111;outline-offset:2px}
-#mbd-newsletter-dialog .mbd-newsletter-frame{
-  display:block;width:100%;height:min(700px,calc(100dvh - 108px));border:0;background:#fff
-}
-@media(max-width:370px){
-  #mbd-site-footer .mbd-f-subscribe-box .mbd-f-email-trigger{padding-left:13px;font-size:13px}
-  #mbd-newsletter-dialog .mbd-newsletter-dialog-head{padding:12px 14px}
-  #mbd-newsletter-dialog .mbd-newsletter-dialog-title{font-size:15px}
-}
-</style>
+
 <style id="mbd-v196-footer-styles">
 /* V1.96 — footer only; HorizonX-inspired layout, all selectors scoped. */
 #mbd-site-footer {
@@ -1523,7 +1484,7 @@ body.mbd-commerce-locked{overflow:hidden!important}
   #mbd-site-footer .mbd-f-nav a:focus-visible .roll-char-inner{transform:none!important}
 }
 </style>
-<link rel="stylesheet" href="assets/contact.css"><link rel="stylesheet" href="assets/page-alignment.css"></head>
+<link rel="stylesheet" href="assets/contact.css"><link rel="stylesheet" href="assets/page-alignment.css"><link rel="stylesheet" href="assets/brevo-newsletter.css"></head>
 <body>
 <header aria-label="Main navigation" class="site-header">
 <div class="nav-inner">
@@ -2210,25 +2171,7 @@ body.mbd-commerce-locked{overflow:hidden!important}
  </div>
  <iframe class="mbd-newsletter-frame" title="MyBizDigital Newsletter Signup" width="540" height="700" scrolling="auto" referrerpolicy="strict-origin-when-cross-origin" data-src="https://f2fa60dd.sibforms.com/v2/serve/MUIFALRZT1F32t3Y-sva0mjChF8W8gnRXlIOfneI1FuYZWvtDSfE5030N1FcY-07Xh9yTX0-heRXEYRptPZfVqsyonyfr-suQsAbq14bzd_zFTT2aV4HLiiJrk7tEut4fuBbQ0LpzhaRtZGagCD4OvyUSAOzR4AuA5yezAzBksy2Wa1LH7LsCdOuULH0piNGlixz9qSd-3ozyPkO2w=="></iframe>
 </dialog>
-<script id="mbd-brevo-newsletter-js">
-(() => {
-  const dialog = document.getElementById('mbd-newsletter-dialog');
-  const frame = dialog?.querySelector('.mbd-newsletter-frame');
-  const close = dialog?.querySelector('.mbd-newsletter-dialog-close');
-  if (!dialog || !frame || !close) return;
-  const openForm = () => {
-    if (typeof dialog.showModal !== 'function') {
-      window.open(frame.dataset.src, '_blank', 'noopener,noreferrer');
-      return;
-    }
-    if (!frame.hasAttribute('src')) frame.setAttribute('src', frame.dataset.src);
-    if (!dialog.open) dialog.showModal();
-  };
-  document.querySelectorAll('[data-mbd-newsletter-open]').forEach(button => button.addEventListener('click', openForm));
-  close.addEventListener('click', () => dialog.close());
-  dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
-})();
-</script>
+
 <script id="mbd-v196-footer-roll">
 (() => {
   const nav = document.querySelector('#mbd-site-footer .mbd-f-nav');
@@ -3268,5 +3211,5 @@ body.mbd-commerce-locked{overflow:hidden!important}
 })();
 
 </script>
-<script src="assets/contact.js" defer></script><script src="assets/page-entrance.js" defer></script></body>
+<script src="assets/contact.js" defer></script><script src="assets/page-entrance.js" defer></script><script src="assets/brevo-newsletter.js" defer></script></body>
 </html>

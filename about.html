@@ -216,7 +216,7 @@ a:focus-visible{outline:2px solid #171717;outline-offset:4px}
   #mbd-site-footer .mbd-f-nav a:focus-visible .roll-char-inner{transform:none!important}
 }
 </style>
-<link rel="stylesheet" href="assets/contact.css"><link rel="stylesheet" href="assets/page-alignment.css"></head>
+<link rel="stylesheet" href="assets/contact.css"><link rel="stylesheet" href="assets/page-alignment.css"><link rel="stylesheet" href="assets/brevo-newsletter.css"></head>
 <body>
 <div id="top"></div>
 <header class="about-header about-container" aria-label="About us page header">
@@ -283,11 +283,11 @@ a:focus-visible{outline:2px solid #171717;outline-offset:4px}
     <p class="mbd-f-subtitle">New NFC products, digital tools and business updates. No filler, just what's new.</p>
    </div>
    <div class="mbd-f-newsletter">
-    <div class="mbd-f-subscribe-box" aria-label="Newsletter registration not yet available">
-     <input type="email" aria-label="Email address (newsletter not available yet)" placeholder="you@email.com" disabled>
-     <button type="button" disabled title="Newsletter sign-ups coming soon">Notify me</button>
+    <div class="mbd-f-subscribe-box" aria-label="MyBizDigital newsletter subscription">
+     <button type="button" class="mbd-f-email-trigger" data-mbd-newsletter-open aria-haspopup="dialog" aria-controls="mbd-newsletter-dialog">you@email.com</button>
+     <button type="button" class="mbd-f-subscribe-action" data-mbd-newsletter-open aria-haspopup="dialog" aria-controls="mbd-newsletter-dialog">Subscribe</button>
     </div>
-    <span class="mbd-f-subscribe-note">Newsletter sign-ups are not available yet.</span>
+    <span class="mbd-f-subscribe-note">Email confirmation required. <a href="privacy-policy.html">Privacy Policy</a></span>
    </div>
   </section>
 
@@ -330,6 +330,15 @@ a:focus-visible{outline:2px solid #171717;outline-offset:4px}
  </div>
  <!-- SSM registration approved 23 October 2026. -->
 </footer>
+<!-- Brevo-hosted form retains reCAPTCHA, consent and double opt-in. -->
+<dialog id="mbd-newsletter-dialog" aria-labelledby="mbd-newsletter-dialog-title">
+ <div class="mbd-newsletter-dialog-head">
+  <h2 class="mbd-newsletter-dialog-title" id="mbd-newsletter-dialog-title">MyBizDigital Newsletter</h2>
+  <button type="button" class="mbd-newsletter-dialog-close" aria-label="Close newsletter form">&times;</button>
+ </div>
+ <iframe class="mbd-newsletter-frame" title="MyBizDigital Newsletter Signup" width="540" height="700" scrolling="auto" referrerpolicy="strict-origin-when-cross-origin" data-src="https://f2fa60dd.sibforms.com/v2/serve/MUIFALRZT1F32t3Y-sva0mjChF8W8gnRXlIOfneI1FuYZWvtDSfE5030N1FcY-07Xh9yTX0-heRXEYRptPZfVqsyonyfr-suQsAbq14bzd_zFTT2aV4HLiiJrk7tEut4fuBbQ0LpzhaRtZGagCD4OvyUSAOzR4AuA5yezAzBksy2Wa1LH7LsCdOuULH0piNGlixz9qSd-3ozyPkO2w=="></iframe>
+</dialog>
+
 <script id="mbd-v196-footer-roll">
 (() => {
   const nav = document.querySelector('#mbd-site-footer .mbd-f-nav');
@@ -374,5 +383,5 @@ a:focus-visible{outline:2px solid #171717;outline-offset:4px}
   });
 })();
 </script>
-<script src="assets/contact.js" defer></script><script src="assets/page-entrance.js" defer></script></body>
+<script src="assets/contact.js" defer></script><script src="assets/page-entrance.js" defer></script><script src="assets/brevo-newsletter.js" defer></script></body>
 </html>
