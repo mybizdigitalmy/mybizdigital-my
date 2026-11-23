@@ -153,11 +153,15 @@
 <p class="mbd-f-subtitle">New NFC products, digital tools and business updates. No filler, just what's new.</p>
 </div>
 <div class="mbd-f-newsletter">
-    <div class="mbd-f-subscribe-box" aria-label="MyBizDigital newsletter subscription">
-     <button type="button" class="mbd-f-email-trigger" data-mbd-newsletter-open aria-haspopup="dialog" aria-controls="mbd-newsletter-dialog">you@email.com</button>
-     <button type="button" class="mbd-f-subscribe-action" data-mbd-newsletter-open aria-haspopup="dialog" aria-controls="mbd-newsletter-dialog">Subscribe</button>
-    </div>
-    <span class="mbd-f-subscribe-note">Email confirmation required. <a href="privacy-policy.html">Privacy Policy</a></span>
+    <form class="mbd-f-subscribe-box" data-mbd-newsletter-form aria-label="Subscribe to MyBizDigital newsletter" novalidate>
+     <label class="visually-hidden" for="mbd-newsletter-email-product-support-html">Email address</label>
+     <input id="mbd-newsletter-email-product-support-html" type="email" name="email" autocomplete="email" placeholder="you@email.com" aria-label="Email address" maxlength="254" required>
+     <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="mbd-f-honeypot">
+     <button type="submit">Notify me</button>
+     <span class="mbd-f-turnstile" data-mbd-turnstile aria-hidden="true"></span>
+    </form>
+    <p class="mbd-f-inline-status" data-mbd-newsletter-status role="status" aria-live="polite" hidden></p>
+    <span class="mbd-f-subscribe-note">By subscribing, you agree to receive MyBizDigital product emails. Unsubscribe anytime. <a href="privacy-policy.html">Privacy Policy</a></span>
    </div>
 </section>
 <div class="mbd-f-main">
@@ -199,14 +203,7 @@
 </div>
 <!-- SSM registration approved 23 October 2026. -->
 </footer>
-<!-- Brevo-hosted form retains reCAPTCHA, consent and double opt-in. -->
-<dialog id="mbd-newsletter-dialog" aria-labelledby="mbd-newsletter-dialog-title">
- <div class="mbd-newsletter-dialog-head">
-  <h2 class="mbd-newsletter-dialog-title" id="mbd-newsletter-dialog-title">MyBizDigital Newsletter</h2>
-  <button type="button" class="mbd-newsletter-dialog-close" aria-label="Close newsletter form">&times;</button>
- </div>
- <iframe class="mbd-newsletter-frame" title="MyBizDigital Newsletter Signup" width="540" height="700" scrolling="auto" referrerpolicy="strict-origin-when-cross-origin" data-src="https://f2fa60dd.sibforms.com/v2/serve/MUIFALRZT1F32t3Y-sva0mjChF8W8gnRXlIOfneI1FuYZWvtDSfE5030N1FcY-07Xh9yTX0-heRXEYRptPZfVqsyonyfr-suQsAbq14bzd_zFTT2aV4HLiiJrk7tEut4fuBbQ0LpzhaRtZGagCD4OvyUSAOzR4AuA5yezAzBksy2Wa1LH7LsCdOuULH0piNGlixz9qSd-3ozyPkO2w=="></iframe>
-</dialog>
+
 
 <script src="assets/library.js" defer></script>
 <script src="assets/footer-roll.js" defer></script>
